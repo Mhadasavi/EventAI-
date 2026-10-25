@@ -12,7 +12,16 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
 
-app.use(express.json({ limit: '10mb' }));
+app.use(express.json({ limit: '2mb' }));
+
+// Security Headers Middleware
+app.use((req, res, next) => {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'SAMEORIGIN');
+  res.setHeader('X-XSS-Protection', '1; mode=block');
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+  next();
+});
 
 // Initialize GoogleGenAI client safely on the server
 const apiKey = process.env.GEMINI_API_KEY || '';
@@ -41,9 +50,13 @@ Comply with safety standards, respect diverse cultural traditions, and avoid pre
 app.post('/api/gemini/chat', async (req, res) => {
   try {
     const { message, context, history } = req.body;
-    if (!message) {
-      return res.status(400).json({ error: 'Message is required' });
+    if (!message || typeof message !== 'string' || message.trim().length === 0) {
+      return res.status(400).json({ error: 'Valid text message is required' });
     }
+    if (message.length > 3000) {
+      return res.status(400).json({ error: 'Message exceeds maximum character length (3000)' });
+    }
+    const sanitizedMessage = message.trim().replace(/[<>]/g, '');
 
     if (ai) {
       const prompt = `Current Event Context:
@@ -54,7 +67,7 @@ Guest Count: ${context?.guestsConfirmed || 168} confirmed of ${context?.guestCap
 Total Budget: $${context?.totalBudget?.toLocaleString() || '45,000'} (Committed: $${context?.committed?.toLocaleString() || '38,420'}, Buffer: $${context?.cushion?.toLocaleString() || '6,580'})
 Key Vendors: Sonoma Bloom (Florals, Review pending), Meadowood Estate (Signed), Wild Thyme Culinary (Tasting upcoming), Silverstone Visuals (Signed).
 
-User Prompt: ${message}
+User Prompt: ${sanitizedMessage}
 
 Instructions:
 Provide a concise, empathetic, and actionable response.
@@ -78,7 +91,7 @@ Maintain the warm, concierge-grade CelebrateAI tone.`;
     }
 
     // Intelligent context-aware fallback if API key is not configured
-    const lower = message.toLowerCase();
+    const lower = sanitizedMessage.toLowerCase();
     let fallbackReply = '';
     let emailDraft = null;
 

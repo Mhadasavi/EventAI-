@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { INITIAL_EVENTS } from './data/mockEvents';
-import { EventData, BudgetItem, Milestone, VendorPartner } from './types';
+import { EventData, BudgetItem, Milestone, VendorPartner, QuoteOption } from './types';
+import { ErrorBoundary } from './components/ErrorBoundary';
 import { Header } from './components/Header';
 import { EventHero } from './components/EventHero';
 import { FinancialPulse } from './components/FinancialPulse';
@@ -24,7 +25,6 @@ import { DependencyGraphModal } from './components/modals/DependencyGraphModal';
 import { QuoteComparisonModal } from './components/modals/QuoteComparisonModal';
 import { CreativeVaultModal } from './components/modals/CreativeVaultModal';
 import { CoPlannerModal } from './components/modals/CoPlannerModal';
-import { QuoteOption } from './types';
 
 export default function App() {
   const [events, setEvents] = useState<EventData[]>(INITIAL_EVENTS);
@@ -94,7 +94,10 @@ export default function App() {
     }, 2800);
   };
 
-  const currentEvent = events.find((e) => e.id === currentEventId) || events[0];
+  const currentEvent = useMemo(
+    () => events.find((e) => e.id === currentEventId) || events[0],
+    [events, currentEventId]
+  );
   const isCurrentRebalanced = !!rebalancedEvents[currentEvent.id];
   const isCurrentAnomalyDismissed = !!dismissedAnomalies[currentEvent.id];
 
@@ -269,27 +272,41 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-full flex flex-col bg-[#f9f9fb] dark:bg-[#121316] text-neutral-800 dark:text-neutral-100 font-sans antialiased transition-colors duration-300">
-      {/* Top Global Navigation Bar */}
-      <Header
-        events={events}
-        currentEvent={currentEvent}
-        onSelectEvent={(e) => {
-          setCurrentEventId(e.id);
-          triggerToast(`Switched workspace to ${e.shortName}`);
-        }}
-        onOpenNewEventModal={() => setIsNewEventOpen(true)}
-        onOpenSearch={() => setIsSearchOpen(true)}
-        isDarkMode={isDarkMode}
-        onToggleDarkMode={() => setIsDarkMode((prev) => !prev)}
-        onToggleCopilot={() => setIsCopilotOpen((prev) => !prev)}
-        isCopilotOpen={isCopilotOpen}
-      />
+    <ErrorBoundary>
+      <div className="min-h-full flex flex-col bg-[#f9f9fb] dark:bg-[#121316] text-neutral-800 dark:text-neutral-100 font-sans antialiased transition-colors duration-300">
+        {/* Accessible Skip Link */}
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:px-4 focus:py-2 focus:bg-brand-500 focus:text-white focus:rounded-xl focus:shadow-xl focus:font-semibold text-xs"
+        >
+          Skip to main content
+        </a>
 
-      {/* Master Workspace Container */}
-      <div className="flex-1 flex overflow-hidden relative">
-        {/* Main Scrollable Content */}
-        <main className="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6 transition-all duration-300">
+        {/* Top Global Navigation Bar */}
+        <Header
+          events={events}
+          currentEvent={currentEvent}
+          onSelectEvent={(e) => {
+            setCurrentEventId(e.id);
+            triggerToast(`Switched workspace to ${e.shortName}`);
+          }}
+          onOpenNewEventModal={() => setIsNewEventOpen(true)}
+          onOpenSearch={() => setIsSearchOpen(true)}
+          isDarkMode={isDarkMode}
+          onToggleDarkMode={() => setIsDarkMode((prev) => !prev)}
+          onToggleCopilot={() => setIsCopilotOpen((prev) => !prev)}
+          isCopilotOpen={isCopilotOpen}
+        />
+
+        {/* Master Workspace Container */}
+        <div className="flex-1 flex overflow-hidden relative">
+          {/* Main Scrollable Content */}
+          <main
+            id="main-content"
+            tabIndex={-1}
+            aria-label="Event Planning Workspace"
+            className="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6 transition-all duration-300 focus:outline-none"
+          >
           <div className="max-w-[1720px] mx-auto space-y-6">
             {/* 1. Hero Banner & Quick Actions Ribbon */}
             <EventHero
@@ -482,5 +499,6 @@ export default function App() {
         </div>
       </div>
     </div>
+  </ErrorBoundary>
   );
 }
