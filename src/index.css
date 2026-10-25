@@ -1,0 +1,40 @@
+@import "tailwindcss";
+
+@theme {
+  --font-serif: "Playfair Display", Georgia, serif;
+  --font-sans: "Plus Jakarta Sans", sans-serif;
+
+  --color-brand-50: #fdf8f6;
+  --color-brand-100: #f9ece7;
+  --color-brand-200: #f3d9d0;
+  --color-brand-300: #e7b9ac;
+  --color-brand-400: #d9917f;
+  --color-brand-500: #c86d56;
+  --color-brand-600: #b4543d;
+  --color-brand-700: #964330;
+  --color-brand-800: #7c392b;
+  --color-brand-900: #673328;
+}
+
+@layer utilities {
+  .frosted-glass {
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(150, 150, 150, 0.25);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(150, 150, 150, 0.45);
+}

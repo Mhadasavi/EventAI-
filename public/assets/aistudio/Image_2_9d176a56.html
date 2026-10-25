@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CelebrateAI — Unified Master Command Dashboard</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            serif: ['"Playfair Display"', 'Georgia', 'serif'],
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#fdf8f6',
+              100: '#f9ece7',
+              200: '#f3d9d0',
+              300: '#e7b9ac',
+              400: '#d9917f',
+              500: '#c86d56', // Core warm terracotta / celebratory rose-gold
+              600: '#b4543d',
+              700: '#964330',
+              800: '#7c392b',
+              900: '#673328',
+            },
+            emerald: {
+              500: '#10b981',
+              600: '#059669',
+            },
+            amber: {
+              500: '#f59e0b',
+            }
+          }
+        }
+      }
+    };
+  </script>
+<style>
+    /* Smooth Transitions & Custom Scrollbars */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(150, 150, 150, 0.25);
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(150, 150, 150, 0.45);
+    }
+    .frosted-glass {
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+  </style>
+</head>
+<body class="h-full bg-[#f9f9fb] dark:bg-[#121316] text-neutral-800 dark:text-neutral-100 font-sans antialiased transition-colors duration-300 flex flex-col">
+<!-- ================= TOP GLOBAL NAVIGATION BAR ================= -->
+<header class="sticky top-0 z-40 bg-white/90 dark:bg-[#18191e]/90 frosted-glass border-b border-neutral-200/80 dark:border-neutral-800/80 px-6 py-3 transition-colors duration-300">
+<div class="max-w-[1720px] mx-auto flex items-center justify-between gap-4">
+<!-- Brand & Event Switcher -->
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-2.5">
+<div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-600 to-brand-400 flex items-center justify-center text-white shadow-md shadow-brand-500/20">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+<div>
+<span class="font-serif text-xl font-bold tracking-tight text-neutral-900 dark:text-white">Celebrate<span class="text-brand-500">AI</span></span>
+<span class="hidden md:inline-block ml-2 px-2 py-0.5 text-[10px] uppercase font-bold tracking-wider rounded-full bg-brand-50 dark:bg-brand-900/30 text-brand-600 dark:text-brand-300 border border-brand-200/50 dark:border-brand-800/50">Studio Master</span>
+</div>
+</div>
+<div class="h-5 w-[1px] bg-neutral-200 dark:bg-neutral-800 hidden sm:block"></div>
+<!-- Event Selector Badge -->
+<div class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-neutral-100 dark:bg-neutral-800/70 border border-neutral-200/60 dark:border-neutral-700/60 text-xs font-medium cursor-pointer hover:bg-neutral-200/60 dark:hover:bg-neutral-800 transition">
+<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+<span class="font-semibold text-neutral-900 dark:text-neutral-100">Elena &amp; Marcus Vineyard Nuptials</span>
+<span class="text-neutral-400 dark:text-neutral-500">• Oct 18, 2025</span>
+<svg class="w-3.5 h-3.5 text-neutral-400 ml-1" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+</div>
+<!-- Quick Search / AI Status -->
+<div class="hidden lg:flex items-center flex-1 max-w-md mx-4">
+<div class="relative w-full">
+<span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-neutral-400">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</span>
+<input class="w-full pl-9 pr-24 py-1.5 text-xs bg-neutral-100/80 dark:bg-neutral-800/80 border border-transparent focus:border-brand-500/50 rounded-full focus:outline-none focus:ring-2 focus:ring-brand-500/20 text-neutral-900 dark:text-neutral-100 placeholder-neutral-400 transition" placeholder="Search budget tranches, vendor contracts, or ask AI..." type="text"/>
+<span class="absolute inset-y-0 right-1 flex items-center pr-2">
+<kbd class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-white dark:bg-neutral-700 border border-neutral-200 dark:border-neutral-600 text-neutral-400">⌘K</kbd>
+</span>
+</div>
+</div>
+<!-- Right Utility Actions: Theme Toggle, Notifications, Copilot Toggle & Profile -->
+<div class="flex items-center gap-3">
+<!-- Live AI Sync Status Indicator -->
+<div class="hidden xl:flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-800/50 text-xs font-medium">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+<span>GenAI Live Engine: Active</span>
+</div>
+<!-- Light/Dark Mode Toggle -->
+<button aria-label="Toggle Theme" class="p-2 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 text-neutral-600 dark:text-neutral-300 transition" id="themeToggleBtn" onclick="toggleTheme()" title="Toggle Theme">
+<!-- Sun Icon (Hidden in dark) -->
+<svg class="w-4 h-4 hidden dark:block" fill="none" id="sunIcon" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<!-- Moon Icon (Hidden in light) -->
+<svg class="w-4 h-4 block dark:hidden" fill="none" id="moonIcon" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+<!-- Toggle Copilot Drawer Button -->
+<button class="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-gradient-to-r from-brand-600 to-brand-500 hover:from-brand-700 hover:to-brand-600 text-white shadow-sm shadow-brand-500/25 text-xs font-semibold tracking-wide transition transform active:scale-95" onclick="toggleCopilotDrawer()">
+<svg class="w-3.5 h-3.5 animate-spin-slow" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M13 10V3L4 14h7v7l9-11h-7z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="hidden sm:inline">Ask Copilot</span>
+<span class="w-2 h-2 rounded-full bg-white animate-ping sm:hidden"></span>
+</button>
+<!-- User Profile Avatar -->
+<div class="flex items-center gap-2 pl-1 border-l border-neutral-200 dark:border-neutral-800">
+<div class="relative cursor-pointer">
+<img alt="Elena Vasquez" class="w-8 h-8 rounded-full object-cover ring-2 ring-brand-500/30" src="https://www.gstatic.com/labs-code/stitch/stitch-placeholder-300x300.svg"/>
+<span class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-500 ring-2 ring-white dark:ring-[#18191e]"></span>
+</div>
+</div>
+</div>
+</div>
+</header>
+<!-- ================= MASTER APP WORKSPACE CONTAINER ================= -->
+<div class="flex-1 flex overflow-hidden relative">
+<!-- MAIN SCROLLABLE CONTENT (LEFT 2-COLUMNS & HERO) -->
+<main class="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6 transition-all duration-300">
+<div class="max-w-[1720px] mx-auto space-y-6">
+<!-- 1. TOP EVENT HERO & QUICK ACTION RIBBON -->
+<section class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-brand-50/70 via-white to-amber-50/40 dark:from-[#1e1c22] dark:via-[#191a20] dark:to-[#161921] border border-neutral-200/80 dark:border-neutral-800 p-6 md:p-8 shadow-sm">
+<!-- Subtle decorative backdrop accent -->
+<div class="absolute -right-20 -top-20 w-80 h-80 bg-brand-500/10 dark:bg-brand-500/5 rounded-full blur-3xl pointer-events-none"></div>
+<div class="absolute right-1/4 -bottom-20 w-60 h-60 bg-amber-500/10 dark:bg-amber-500/5 rounded-full blur-3xl pointer-events-none"></div>
+<div class="relative z-10 flex flex-col xl:flex-row xl:items-center justify-between gap-6">
+<!-- Hero Title, Date & Location -->
+<div class="space-y-3 max-w-2xl">
+<div class="flex flex-wrap items-center gap-2.5">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-brand-500 text-white shadow-sm shadow-brand-500/20">
+<svg class="w-3 h-3" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+                  142 Days Until "I Do"
+                </span>
+<span class="px-2.5 py-0.5 rounded-full text-xs font-medium bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300 border border-neutral-200/60 dark:border-neutral-700">
+                  📍 Meadowood Estate • St. Helena, Napa Valley
+                </span>
+<span class="px-2.5 py-0.5 rounded-full text-xs font-medium bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300 border border-neutral-200/60 dark:border-neutral-700">
+                  🗓 Saturday, Oct 18, 2025
+                </span>
+</div>
+<h1 class="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-neutral-900 dark:text-white leading-[1.15]">
+                Elena &amp; Marcus Autumn Vineyard Nuptials
+              </h1>
+<p class="text-sm text-neutral-600 dark:text-neutral-400 max-w-xl">
+                Unified live planning engine: 168 guests confirmed, contracts cross-referenced against Napa harvest benchmarks, and autonomous budget pacing active.
+              </p>
+</div>
+<!-- Readiness Progress Gauge & KPI Widget -->
+<div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 bg-white/80 dark:bg-neutral-800/80 frosted-glass p-4 rounded-2xl border border-neutral-200/70 dark:border-neutral-700/60 shadow-sm">
+<!-- Circular Progress Gauge -->
+<div class="flex items-center gap-4 pr-0 sm:pr-4 border-b sm:border-b-0 sm:border-r border-neutral-200 dark:border-neutral-700 pb-3 sm:pb-0">
+<div class="relative w-16 h-16 flex items-center justify-center flex-shrink-0">
+<svg class="w-16 h-16 transform -rotate-90" viewbox="0 0 36 36">
+<path class="text-neutral-200 dark:text-neutral-700" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="3.5"></path>
+<path class="text-brand-500" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="78, 100" stroke-linecap="round" stroke-width="3.5"></path>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center text-center">
+<span class="font-serif text-lg font-bold text-neutral-900 dark:text-white leading-none">78%</span>
+<span class="text-[9px] uppercase tracking-wider text-neutral-400">Score</span>
+</div>
+</div>
+<div>
+<div class="text-xs font-semibold text-neutral-900 dark:text-neutral-100 flex items-center gap-1.5">
+                    Celebration Readiness
+                    <span class="inline-block w-2 h-2 rounded-full bg-emerald-500"></span>
+</div>
+<div class="text-xs text-neutral-500 dark:text-neutral-400 mt-0.5">24 of 42 Milestones Verified</div>
+<div class="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium mt-1">Pacing Smoothly on Schedule</div>
+</div>
+</div>
+<!-- Quick Mini Stat Pills -->
+<div class="grid grid-cols-2 gap-2 text-left min-w-[170px]">
+<div class="bg-neutral-50 dark:bg-neutral-900/60 p-2 rounded-xl">
+<span class="text-[10px] text-neutral-500 dark:text-neutral-400 block uppercase">Guest RSVPs</span>
+<span class="text-sm font-bold text-neutral-900 dark:text-white">168 <span class="text-xs font-normal text-neutral-400">/ 180</span></span>
+</div>
+<div class="bg-neutral-50 dark:bg-neutral-900/60 p-2 rounded-xl">
+<span class="text-[10px] text-neutral-500 dark:text-neutral-400 block uppercase">AI Savings</span>
+<span class="text-sm font-bold text-emerald-600 dark:text-emerald-400">+$2,140</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Quick Actions Ribbon -->
+<div class="mt-6 pt-5 border-t border-neutral-200/70 dark:border-neutral-800/80 flex flex-wrap items-center justify-between gap-3">
+<div class="flex flex-wrap items-center gap-2.5">
+<span class="text-xs font-semibold uppercase tracking-wider text-neutral-400 dark:text-neutral-500 mr-1">Quick Actions:</span>
+<!-- [+ Log Expense] -->
+<button class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-brand-500 hover:bg-brand-600 text-white text-xs font-semibold shadow-sm shadow-brand-500/20 transition active:scale-95" onclick="simulateToast('Log Expense Modal Triggered')">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M12 6v6m0 0v6m0-6h6m-6 0H6" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+                + Log Expense
+              </button>
+<!-- [+ Add Milestone] -->
+<button class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white dark:bg-neutral-800 hover:bg-neutral-50 dark:hover:bg-neutral-700/80 text-neutral-800 dark:text-neutral-100 border border-neutral-200 dark:border-neutral-700 text-xs font-semibold transition active:scale-95" onclick="simulateToast('Add Milestone Drawer Opened')">
+<svg class="w-3.5 h-3.5 text-neutral-500" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+                + Add Milestone
+              </button>
+<!-- [Draft Vendor Message] -->
+<button class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white dark:bg-neutral-800 hover:bg-neutral-50 dark:hover:bg-neutral-700/80 text-neutral-800 dark:text-neutral-100 border border-neutral-200 dark:border-neutral-700 text-xs font-semibold transition active:scale-95" onclick="openVendorDraftModal()">
+<svg class="w-3.5 h-3.5 text-brand-500" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+                Draft Vendor Message
+              </button>
+<!-- [AI Audit] -->
+<button class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 hover:bg-emerald-100 dark:hover:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300 border border-emerald-200/80 dark:border-emerald-800/60 text-xs font-semibold transition active:scale-95" onclick="triggerAiAudit()">
+<svg class="w-3.5 h-3.5 text-emerald-600 animate-pulse" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+                AI Contract &amp; Fee Audit
+              </button>
+</div>
+<div class="flex items-center gap-2 text-xs text-neutral-500 dark:text-neutral-400">
+<span>Co-planning with:</span>
+<span class="inline-flex items-center gap-1 font-medium text-neutral-800 dark:text-neutral-200">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                Marcus (Groom)
+              </span>
+</div>
+</div>
+</section>
+<!-- 2-COLUMN MAIN WORKSPACE -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+<!-- ================= LEFT COLUMN: OPERATIONAL COMMAND (7 COLS) ================= -->
+<div class="lg:col-span-7 space-y-6">
+<!-- 2A. FINANCIAL PULSE CARD -->
+<div class="rounded-3xl bg-white dark:bg-[#18191e] border border-neutral-200/80 dark:border-neutral-800 p-6 shadow-sm space-y-5">
+<!-- Card Header -->
+<div class="flex items-center justify-between">
+<div>
+<div class="flex items-center gap-2">
+<h2 class="font-serif text-xl font-bold text-neutral-900 dark:text-white">Financial Pulse &amp; Capital Pacing</h2>
+<span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400">Live Sync</span>
+</div>
+<p class="text-xs text-neutral-500 dark:text-neutral-400 mt-0.5">Automated bank reconciliation and vendor milestone escrow lock.</p>
+</div>
+<button class="text-xs font-semibold text-brand-600 dark:text-brand-400 hover:underline flex items-center gap-1" onclick="simulateToast('Navigating to full budget sheet...')">
+                  Full Ledger
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</button>
+</div>
+<!-- Capital Summary KPIs -->
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+<div class="p-3.5 rounded-2xl bg-neutral-50 dark:bg-neutral-900/60 border border-neutral-200/50 dark:border-neutral-800">
+<span class="text-[11px] font-medium text-neutral-500 dark:text-neutral-400 block">Total Budget Cap</span>
+<span class="font-serif text-2xl font-bold text-neutral-900 dark:text-white mt-1 block">$45,000</span>
+<span class="text-[10px] text-neutral-400">Verified Elena &amp; Marcus</span>
+</div>
+<div class="p-3.5 rounded-2xl bg-neutral-50 dark:bg-neutral-900/60 border border-neutral-200/50 dark:border-neutral-800">
+<span class="text-[11px] font-medium text-neutral-500 dark:text-neutral-400 block">Committed / Settled</span>
+<span class="font-serif text-2xl font-bold text-brand-600 dark:text-brand-400 mt-1 block">$38,420</span>
+<span class="text-[10px] font-medium text-neutral-500">85.3% allocated</span>
+</div>
+<div class="p-3.5 rounded-2xl bg-neutral-50 dark:bg-neutral-900/60 border border-neutral-200/50 dark:border-neutral-800">
+<span class="text-[11px] font-medium text-neutral-500 dark:text-neutral-400 block">Safe Harbor Cushion</span>
+<span class="font-serif text-2xl font-bold text-emerald-600 dark:text-emerald-400 mt-1 block">$6,580</span>
+<span class="text-[10px] text-emerald-600 font-medium">14.7% free reserve</span>
+</div>
+<div class="p-3.5 rounded-2xl bg-neutral-50 dark:bg-neutral-900/60 border border-neutral-200/50 dark:border-neutral-800">
+<span class="text-[11px] font-medium text-neutral-500 dark:text-neutral-400 block">AI Detected Gains</span>
+<span class="font-serif text-2xl font-bold text-amber-500 mt-1 block">+$2,140</span>
+<span class="text-[10px] text-amber-600 dark:text-amber-400 font-medium">3 active captures</span>
+</div>
+</div>
+<!-- Multi-Segment Portfolio Progress Bar -->
+<div class="space-y-2">
+<div class="flex items-center justify-between text-xs">
+<span class="font-medium text-neutral-700 dark:text-neutral-300">Portfolio Allocation Pacing</span>
+<span class="text-neutral-500">$38,420 / $45,000 committed (5 categories)</span>
+</div>
+<!-- Split progress track -->
+<div class="h-3 w-full bg-neutral-200/70 dark:bg-neutral-800 rounded-full overflow-hidden flex shadow-inner">
+<!-- Venue (40%) -->
+<div class="h-full bg-brand-700 hover:opacity-90 transition relative group" style="width: 40%;" title="Venue: $18,000 (40%)"></div>
+<!-- Catering (25.5%) -->
+<div class="h-full bg-brand-500 hover:opacity-90 transition relative group" style="width: 25.5%;" title="Catering: $11,500 (25.5%)"></div>
+<!-- Decor/Floral (13.7%) Over target -->
+<div class="h-full bg-red-500 hover:opacity-90 transition relative group" style="width: 13.8%;" title="Decor &amp; Florals (Exceeding): $6,200"></div>
+<!-- Media/Cinematography (10.6%) -->
+<div class="h-full bg-amber-500 hover:opacity-90 transition relative group" style="width: 10.6%;" title="Media: $4,800"></div>
+<!-- Remaining Cushion (14.7%) -->
+<div class="h-full bg-emerald-500/30 dark:bg-emerald-500/20" style="width: 10.1%;" title="Untouched Buffer"></div>
+</div>
+<!-- Legend Pills -->
+<div class="flex flex-wrap items-center gap-3 pt-1 text-[11px] text-neutral-500 dark:text-neutral-400">
+<span class="inline-flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-brand-700"></span> Venue ($18k)</span>
+<span class="inline-flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-brand-500"></span> Catering ($11.5k)</span>
+<span class="inline-flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-red-500"></span> Decor ($6.2k <span class="text-red-500 font-bold">▲8%</span>)</span>
+<span class="inline-flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-amber-500"></span> Photo/Video ($4.8k)</span>
+<span class="inline-flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-emerald-500"></span> Buffer ($6.58k)</span>
+</div>
+</div>
+<!-- AI ANOMALY BANNER WITH 1-CLICK REBALANCE -->
+<div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-red-50/90 via-amber-50/70 to-brand-50/60 dark:from-red-950/40 dark:via-neutral-900/80 dark:to-brand-950/30 border border-red-200/80 dark:border-red-900/60 p-4 transition-all duration-300" id="rebalanceBanner">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+<div class="flex items-start gap-3">
+<div class="w-9 h-9 rounded-xl bg-red-100 dark:bg-red-900/60 text-red-600 dark:text-red-300 flex items-center justify-center flex-shrink-0 mt-0.5">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-red-600 text-white">AI Fiscal Anomaly</span>
+<span class="text-xs font-bold text-red-700 dark:text-red-300">Decor &amp; Florals Exceeding Target (+8.1% / +$700.00)</span>
+</div>
+<p class="text-xs text-neutral-600 dark:text-neutral-300 mt-1 leading-relaxed">
+                        Sonoma Bloom's upgraded arbor exceeds the baseline cap. CelebrateAI detects <span class="font-bold text-neutral-900 dark:text-white">$1,300 uncommitted surplus</span> in the Printed Stationery line. Rebalancing preserves your full <span class="font-bold text-emerald-600">$6,580 Safe Harbor buffer</span>.
+                      </p>
+</div>
+</div>
+<!-- 1-Click Rebalance CTA -->
+<div class="flex items-center gap-2 flex-shrink-0 self-end md:self-center">
+<button class="px-3.5 py-2 rounded-xl bg-gradient-to-r from-brand-600 to-red-600 hover:from-brand-700 hover:to-red-700 text-white text-xs font-semibold shadow-md shadow-brand-500/20 transition transform active:scale-95 flex items-center gap-1.5 whitespace-nowrap" id="rebalanceBtn" onclick="applyRebalance()">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+                      Rebalance $700 Surplus
+                    </button>
+<button class="px-2.5 py-2 rounded-xl text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 text-xs font-medium transition" onclick="dismissAnomaly()">
+                      Dismiss
+                    </button>
+</div>
+</div>
+</div>
+</div>
+<!-- 2B. CRITICAL MILESTONES & AUTOMATED DEPENDENCIES -->
+<div class="rounded-3xl bg-white dark:bg-[#18191e] border border-neutral-200/80 dark:border-neutral-800 p-6 shadow-sm space-y-4">
+<!-- Card Header & Filter -->
+<div class="flex items-center justify-between">
+<div>
+<h2 class="font-serif text-xl font-bold text-neutral-900 dark:text-white">Critical Milestones &amp; Dependencies</h2>
+<p class="text-xs text-neutral-500 dark:text-neutral-400 mt-0.5">Chronological execution path with automated prerequisite blockers.</p>
+</div>
+<div class="flex items-center gap-1.5 bg-neutral-100 dark:bg-neutral-800/80 p-1 rounded-xl text-[11px] font-medium">
+<button class="px-2.5 py-1 rounded-lg bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white font-semibold shadow-xs">All (6)</button>
+<button class="px-2.5 py-1 rounded-lg text-neutral-500 hover:text-neutral-900 dark:hover:text-white transition">High Priority</button>
+<button class="px-2.5 py-1 rounded-lg text-neutral-500 hover:text-neutral-900 dark:hover:text-white transition">Blocked</button>
+</div>
+</div>
+<!-- Automated Dependency Lock Alert Bar -->
+<div class="flex items-center gap-3 p-3.5 rounded-2xl bg-amber-50/70 dark:bg-amber-950/30 border border-amber-200/70 dark:border-amber-900/40 text-xs">
+<div class="w-7 h-7 rounded-lg bg-amber-100 dark:bg-amber-900/50 text-amber-600 dark:text-amber-400 flex items-center justify-center flex-shrink-0">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+<div class="flex-1">
+<span class="font-bold text-amber-900 dark:text-amber-200">Rule DEP-882:</span>
+<span class="text-amber-800 dark:text-amber-300"> Task <strong class="font-semibold">"Order Escort Cards &amp; Seating Charts"</strong> is locked until final RSVP headcount closes in 18 days.</span>
+</div>
+<button class="text-[11px] font-semibold text-amber-700 dark:text-amber-300 underline hover:no-underline whitespace-nowrap" onclick="simulateToast('Prerequisite dependency graph viewed')">
+                  View Dependency
+                </button>
+</div>
+<!-- Chronological Milestone Checklist Items -->
+<div class="space-y-2.5 pt-1">
+<!-- Item 1: High Priority / In 3 Days -->
+<div class="group flex items-start gap-3.5 p-3.5 rounded-2xl bg-neutral-50/80 dark:bg-neutral-900/50 hover:bg-neutral-100/80 dark:hover:bg-neutral-900 border border-neutral-200/50 dark:border-neutral-800/80 transition">
+<input class="mt-1 w-4 h-4 rounded text-brand-600 focus:ring-brand-500 border-neutral-300 dark:border-neutral-700 cursor-pointer" type="checkbox"/>
+<div class="flex-1 min-w-0">
+<div class="flex flex-wrap items-center justify-between gap-1">
+<h4 class="text-xs font-bold text-neutral-900 dark:text-white">Book Guest Shuttles &amp; St. Helena Charter Vans</h4>
+<div class="flex items-center gap-1.5">
+<span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-red-100 dark:bg-red-950/60 text-red-600 dark:text-red-300 border border-red-200 dark:border-red-900/50">High Priority</span>
+<span class="text-[11px] font-medium text-neutral-500">Due June 24 (In 3 days)</span>
+</div>
+</div>
+<p class="text-xs text-neutral-500 dark:text-neutral-400 mt-1">Requires contracted quote approval with Napa Valley Sprinters. AI draft proposal ready.</p>
+<div class="flex items-center gap-2 mt-2">
+<button class="px-2.5 py-1 rounded-lg bg-white dark:bg-neutral-800 text-[11px] font-semibold text-neutral-700 dark:text-neutral-300 border border-neutral-200 dark:border-neutral-700 hover:bg-neutral-50" onclick="simulateToast('3 Shuttle Quotes Opened')">View 3 Quotes ($1,850)</button>
+<button class="px-2.5 py-1 rounded-lg bg-brand-500 text-[11px] font-semibold text-white hover:bg-brand-600" onclick="simulateToast('Direct Approval Sent to Dispatch')">Send Approval</button>
+</div>
+</div>
+</div>
+<!-- Item 2: Finalize Tasting Menu -->
+<div class="group flex items-start gap-3.5 p-3.5 rounded-2xl bg-neutral-50/80 dark:bg-neutral-900/50 hover:bg-neutral-100/80 dark:hover:bg-neutral-900 border border-neutral-200/50 dark:border-neutral-800/80 transition">
+<input class="mt-1 w-4 h-4 rounded text-brand-600 focus:ring-brand-500 border-neutral-300 dark:border-neutral-700 cursor-pointer" type="checkbox"/>
+<div class="flex-1 min-w-0">
+<div class="flex flex-wrap items-center justify-between gap-1">
+<h4 class="text-xs font-bold text-neutral-900 dark:text-white">Finalize Tasting Menu: 5-Course Plated Selection</h4>
+<div class="flex items-center gap-1.5">
+<span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300">Chef Confirmed</span>
+<span class="text-[11px] font-medium text-neutral-500">Due June 28 (In 7 days)</span>
+</div>
+</div>
+<p class="text-xs text-neutral-500 dark:text-neutral-400 mt-1">Wild Thyme Catering • Tasting at 2:00 PM. 8 dairy-free pairings confirmed.</p>
+</div>
+</div>
+<!-- Item 3: Automated Dependency Locked Item -->
+<div class="group flex items-start gap-3.5 p-3.5 rounded-2xl bg-neutral-100/40 dark:bg-neutral-900/20 border border-dashed border-neutral-300 dark:border-neutral-800 opacity-80">
+<div class="mt-0.5 text-neutral-400">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex flex-wrap items-center justify-between gap-1">
+<h4 class="text-xs font-semibold text-neutral-700 dark:text-neutral-300 line-through">Print Escort Cards &amp; Final Seating Charts</h4>
+<div class="flex items-center gap-1.5">
+<span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-neutral-200 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400">Locked By Rule DEP-882</span>
+</div>
+</div>
+<p class="text-xs text-neutral-400 mt-0.5">Will auto-unlock when "Finalize RSVP Headcount" completes on July 20.</p>
+</div>
+</div>
+<!-- Item 4: Completed Item -->
+<div class="group flex items-start gap-3.5 p-3.5 rounded-2xl bg-neutral-50/40 dark:bg-neutral-900/30 border border-neutral-200/40 dark:border-neutral-800/50">
+<input checked="" class="mt-1 w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500 border-neutral-300 dark:border-neutral-700" disabled="" type="checkbox"/>
+<div class="flex-1 min-w-0">
+<div class="flex flex-wrap items-center justify-between gap-1">
+<h4 class="text-xs font-semibold text-neutral-500 dark:text-neutral-400 line-through">Send Digital &amp; Formal Foil-Pressed Invitations</h4>
+<span class="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400">Completed June 12 • Minted Sync</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- ================= RIGHT COLUMN: INTELLIGENCE & CURATION (5 COLS) ================= -->
+<div class="lg:col-span-5 space-y-6">
+<!-- 3A. VENDOR RADAR & CONTRACT HEALTH -->
+<div class="rounded-3xl bg-white dark:bg-[#18191e] border border-neutral-200/80 dark:border-neutral-800 p-6 shadow-sm space-y-4">
+<div class="flex items-center justify-between">
+<div>
+<h2 class="font-serif text-xl font-bold text-neutral-900 dark:text-white">Vendor Radar &amp; Contract Health</h2>
+<p class="text-xs text-neutral-500 dark:text-neutral-400 mt-0.5">Real-time status of 4 tier-one event partners.</p>
+</div>
+<span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-brand-50 dark:bg-brand-900/30 text-brand-600 dark:text-brand-300">
+                  4 Active
+                </span>
+</div>
+<!-- Vendor Partner Status Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+<!-- Vendor 1: Venue -->
+<div class="p-3.5 rounded-2xl bg-neutral-50/80 dark:bg-neutral-900/60 border border-neutral-200/60 dark:border-neutral-800 flex flex-col justify-between">
+<div class="flex items-start justify-between">
+<div>
+<h4 class="text-xs font-bold text-neutral-900 dark:text-white">Meadowood Estate</h4>
+<span class="text-[10px] text-neutral-400">Venue &amp; Historic Grounds</span>
+</div>
+<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300">Signed</span>
+</div>
+<div class="mt-3 pt-2 border-t border-neutral-200/50 dark:border-neutral-800/80 flex items-center justify-between text-xs">
+<span class="font-semibold text-neutral-800 dark:text-neutral-200">$18,000</span>
+<span class="text-[10px] text-emerald-600 dark:text-emerald-400 font-medium">3/3 Tranches Cleared</span>
+</div>
+</div>
+<!-- Vendor 2: Sonoma Bloom -->
+<div class="p-3.5 rounded-2xl bg-neutral-50/80 dark:bg-neutral-900/60 border border-neutral-200/60 dark:border-neutral-800 flex flex-col justify-between">
+<div class="flex items-start justify-between">
+<div>
+<h4 class="text-xs font-bold text-neutral-900 dark:text-white">Sonoma Bloom</h4>
+<span class="text-[10px] text-neutral-400">Botanical Scenography</span>
+</div>
+<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300">Review</span>
+</div>
+<div class="mt-3 pt-2 border-t border-neutral-200/50 dark:border-neutral-800/80 flex items-center justify-between text-xs">
+<span class="font-semibold text-neutral-800 dark:text-neutral-200">$6,200</span>
+<span class="text-[10px] text-amber-600 dark:text-amber-400 font-medium">Swap Draft Pending</span>
+</div>
+</div>
+<!-- Vendor 3: Wild Thyme Culinary -->
+<div class="p-3.5 rounded-2xl bg-neutral-50/80 dark:bg-neutral-900/60 border border-neutral-200/60 dark:border-neutral-800 flex flex-col justify-between">
+<div class="flex items-start justify-between">
+<div>
+<h4 class="text-xs font-bold text-neutral-900 dark:text-white">Wild Thyme Culinary</h4>
+<span class="text-[10px] text-neutral-400">Sommelier &amp; Plated Dinner</span>
+</div>
+<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300">Deposit Paid</span>
+</div>
+<div class="mt-3 pt-2 border-t border-neutral-200/50 dark:border-neutral-800/80 flex items-center justify-between text-xs">
+<span class="font-semibold text-neutral-800 dark:text-neutral-200">$11,500</span>
+<span class="text-[10px] text-neutral-400">Tasting in 7d</span>
+</div>
+</div>
+<!-- Vendor 4: Silverstone Visuals -->
+<div class="p-3.5 rounded-2xl bg-neutral-50/80 dark:bg-neutral-900/60 border border-neutral-200/60 dark:border-neutral-800 flex flex-col justify-between">
+<div class="flex items-start justify-between">
+<div>
+<h4 class="text-xs font-bold text-neutral-900 dark:text-white">Silverstone Visuals</h4>
+<span class="text-[10px] text-neutral-400">Drone &amp; 10hr Cinema</span>
+</div>
+<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300">Signed</span>
+</div>
+<div class="mt-3 pt-2 border-t border-neutral-200/50 dark:border-neutral-800/80 flex items-center justify-between text-xs">
+<span class="font-semibold text-neutral-800 dark:text-neutral-200">$4,800</span>
+<span class="text-[10px] text-neutral-400">Balance due event day</span>
+</div>
+</div>
+</div>
+</div>
+<!-- 3B. AESTHETIC & CREATIVE VAULT SNIPPET -->
+<div class="rounded-3xl bg-white dark:bg-[#18191e] border border-neutral-200/80 dark:border-neutral-800 p-6 shadow-sm space-y-4">
+<div class="flex items-center justify-between">
+<div>
+<h2 class="font-serif text-xl font-bold text-neutral-900 dark:text-white">Creative Vault &amp; Sensory Deck</h2>
+<p class="text-xs text-neutral-500 dark:text-neutral-400 mt-0.5">AI-synthesized sensory mood boards and cocktail recipes.</p>
+</div>
+<button class="text-xs font-semibold text-brand-600 dark:text-brand-400 hover:underline" onclick="simulateToast('Opening full Creative Vault repository...')">
+                  Browse All 14
+                </button>
+</div>
+<!-- Curated Signature Cocktail Card -->
+<div class="relative overflow-hidden rounded-2xl bg-neutral-50 dark:bg-neutral-900/70 border border-neutral-200/70 dark:border-neutral-800 p-4">
+<div class="flex gap-4">
+<img alt="Fig &amp; Rosemary Sparkle" class="w-20 h-20 rounded-xl object-cover shadow-sm flex-shrink-0" src="https://www.gstatic.com/labs-code/stitch/stitch-placeholder-300x300.svg"/>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between">
+<span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-brand-50 dark:bg-brand-900/40 text-brand-700 dark:text-brand-300">Signature Cocktail</span>
+<span class="text-xs font-bold text-neutral-900 dark:text-white">Est. $8.20 / guest</span>
+</div>
+<h4 class="font-serif text-sm font-bold text-neutral-900 dark:text-white mt-1">Fig &amp; Rosemary Champagne Sparkle</h4>
+<p class="text-xs text-neutral-500 dark:text-neutral-400 mt-1 line-clamp-2">Caramelized Black Mission fig syrup, fresh bruised rosemary, and Sonoma Brut sparkling wine.</p>
+<div class="flex items-center gap-2 mt-2">
+<span class="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold">98% Aesthetic Match</span>
+<span class="text-neutral-300 dark:text-neutral-700">•</span>
+<button class="text-[11px] text-brand-600 dark:text-brand-400 font-medium hover:underline" onclick="simulateToast('Cocktail specs &amp; alcohol batch formulas copied')">Copy Bar Specs</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Seasonal Color Swatch Token Strip -->
+<div class="p-4 rounded-2xl bg-neutral-50 dark:bg-neutral-900/70 border border-neutral-200/70 dark:border-neutral-800 space-y-2">
+<div class="flex items-center justify-between text-xs">
+<span class="font-bold text-neutral-900 dark:text-white">Autumn Palette: "Terracotta &amp; Golden Dusk"</span>
+<span class="text-[10px] text-neutral-400">Palette ID: #NC-402</span>
+</div>
+<div class="flex items-center gap-2.5 pt-1">
+<div class="flex-1 h-9 rounded-xl bg-[#c86d56] shadow-sm flex items-center justify-center text-[10px] font-mono text-white/90 font-semibold" title="Terracotta: #C86D56">#C86D56</div>
+<div class="flex-1 h-9 rounded-xl bg-[#8c6b32] shadow-sm flex items-center justify-center text-[10px] font-mono text-white/90 font-semibold" title="Warm Olive: #8C6B32">#8C6B32</div>
+<div class="flex-1 h-9 rounded-xl bg-[#f2d8cc] shadow-sm flex items-center justify-center text-[10px] font-mono text-neutral-700 font-semibold" title="Blush Clay: #F2D8CC">#F2D8CC</div>
+<div class="flex-1 h-9 rounded-xl bg-[#1d5249] shadow-sm flex items-center justify-center text-[10px] font-mono text-white/90 font-semibold" title="Forest Evergreen: #1D5249">#1D5249</div>
+</div>
+<p class="text-[11px] text-neutral-500 dark:text-neutral-400">Extracts used across Sonoma Bloom florist proposal and custom foil place cards.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- ================= 4. PERSISTENT GENAI COPILOT DRAWER (RIGHT PANEL) ================= -->
+<aside class="w-full sm:w-[420px] bg-white dark:bg-[#18191e] border-l border-neutral-200/80 dark:border-neutral-800 flex flex-col flex-shrink-0 z-30 transition-all duration-300 shadow-xl lg:shadow-none" id="copilotDrawer">
+<!-- Drawer Header -->
+<div class="p-4 border-b border-neutral-200 dark:border-neutral-800 flex items-center justify-between bg-neutral-50/50 dark:bg-neutral-900/30">
+<div class="flex items-center gap-2.5">
+<div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-brand-600 to-amber-500 text-white flex items-center justify-center shadow-sm">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M13 10V3L4 14h7v7l9-11h-7z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<div>
+<h3 class="font-serif text-sm font-bold text-neutral-900 dark:text-white flex items-center gap-1.5">
+              CelebrateAI Copilot
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+</h3>
+<span class="text-[10px] text-neutral-400">Context aware: Sonoma contract &amp; RSVPs</span>
+</div>
+</div>
+<div class="flex items-center gap-1">
+<button class="p-1.5 rounded-lg text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition" onclick="clearChat()" title="Clear thread">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</button>
+<button class="p-1.5 rounded-lg text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition lg:hidden" onclick="toggleCopilotDrawer()" title="Close Drawer">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</button>
+</div>
+</div>
+<!-- Live Chat Stream -->
+<div class="flex-1 overflow-y-auto p-4 space-y-4 text-xs" id="chatMessages">
+<!-- AI Welcome Greeting -->
+<div class="flex items-start gap-2.5">
+<div class="w-6 h-6 rounded-lg bg-brand-500/10 text-brand-600 dark:text-brand-400 flex items-center justify-center flex-shrink-0 mt-0.5">
+            ✨
+          </div>
+<div class="space-y-1 max-w-[85%]">
+<div class="p-3 rounded-2xl rounded-tl-sm bg-neutral-100 dark:bg-neutral-800/80 text-neutral-800 dark:text-neutral-200 leading-relaxed">
+              Hello Elena &amp; Marcus! I've loaded your vendor contracts, Napa climate forecasts, and live budget balances. How can I assist your planning right now?
+            </div>
+<span class="text-[10px] text-neutral-400 block pl-1">10:41 AM</span>
+</div>
+</div>
+<!-- User Message -->
+<div class="flex items-start justify-end gap-2.5">
+<div class="space-y-1 max-w-[85%] text-right">
+<div class="p-3 rounded-2xl rounded-tr-sm bg-brand-500 text-white text-left leading-relaxed shadow-sm">
+              Can you draft a polite email to Sonoma Bloom asking if we can swap imported peonies for seasonal garden roses to stay within budget?
+            </div>
+<span class="text-[10px] text-neutral-400 block pr-1">10:42 AM • Elena</span>
+</div>
+<img alt="Elena" class="w-6 h-6 rounded-full object-cover flex-shrink-0 mt-0.5" src="https://www.gstatic.com/labs-code/stitch/stitch-placeholder-300x300.svg"/>
+</div>
+<!-- AI Response with Actionable Email Draft Card -->
+<div class="flex items-start gap-2.5">
+<div class="w-6 h-6 rounded-lg bg-brand-500/10 text-brand-600 dark:text-brand-400 flex items-center justify-center flex-shrink-0 mt-0.5">
+            ✨
+          </div>
+<div class="space-y-2 max-w-[92%]">
+<div class="p-3 rounded-2xl rounded-tl-sm bg-neutral-100 dark:bg-neutral-800/80 text-neutral-800 dark:text-neutral-200 leading-relaxed">
+              Here is a tailored negotiation draft that trims <span class="font-bold text-emerald-600 dark:text-emerald-400">~$750</span> by substituting greenhouse David Austin garden roses and blush ranunculus:
+            </div>
+<!-- Email Draft Micro-Card -->
+<div class="rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 p-3 space-y-2 shadow-xs">
+<div class="flex items-center justify-between border-b border-neutral-100 dark:border-neutral-800 pb-1.5 text-[11px]">
+<span class="font-semibold text-neutral-900 dark:text-white">Subject: Nuptials (Oct 18) — Floral Adjustments</span>
+<span class="text-neutral-400 text-[10px]">Draft v2</span>
+</div>
+<p class="text-[11px] text-neutral-600 dark:text-neutral-300 leading-relaxed">
+                "Hi Camille &amp; Sonoma Bloom team, Marcus and I adore your vision deck! As we finalize line allocations, we noticed imported peony surcharges. Could we substitute locally grown Juliet garden roses to keep our original threshold? Warm regards, Elena &amp; Marcus"
+              </p>
+<div class="flex items-center gap-2 pt-1 border-t border-neutral-100 dark:border-neutral-800">
+<button class="flex-1 py-1 px-2 rounded-lg bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 text-neutral-700 dark:text-neutral-200 font-semibold text-[10px] transition" onclick="copyDraftToClipboard()">
+                  Copy Text
+                </button>
+<button class="flex-1 py-1 px-2 rounded-lg bg-brand-500 hover:bg-brand-600 text-white font-semibold text-[10px] transition" onclick="simulateToast('Connected to Gmail — Draft created!')">
+                  Send via Gmail
+                </button>
+</div>
+</div>
+<span class="text-[10px] text-neutral-400 block pl-1">10:43 AM</span>
+</div>
+</div>
+</div>
+<!-- Quick Prompt Suggestion Chips -->
+<div class="px-4 py-2 border-t border-neutral-200/60 dark:border-neutral-800 bg-neutral-50/50 dark:bg-neutral-900/30 overflow-x-auto whitespace-nowrap space-x-2">
+<button class="px-2.5 py-1 rounded-full text-[11px] bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 hover:border-brand-500 text-neutral-700 dark:text-neutral-300 transition" onclick="sendQuickPrompt('Draft a thank-you note to Meadowood venue team')">
+          ✍️ Draft Venue Note
+        </button>
+<button class="px-2.5 py-1 rounded-full text-[11px] bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 hover:border-brand-500 text-neutral-700 dark:text-neutral-300 transition" onclick="sendQuickPrompt('What happens if RSVP headcount drops to 150?')">
+          📉 Headcount Impact Analysis
+        </button>
+<button class="px-2.5 py-1 rounded-full text-[11px] bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 hover:border-brand-500 text-neutral-700 dark:text-neutral-300 transition" onclick="sendQuickPrompt('Suggest 3 rainy-day contingency layout ideas')">
+          ☔ Rain Contingency Ideas
+        </button>
+</div>
+<!-- Chat Input Field -->
+<div class="p-3 border-t border-neutral-200 dark:border-neutral-800 bg-white dark:bg-[#18191e]">
+<form class="relative flex items-center" onsubmit="handleChatSubmit(event)">
+<input class="w-full pl-3 pr-10 py-2.5 text-xs bg-neutral-100 dark:bg-neutral-800 border border-transparent focus:border-brand-500 rounded-xl focus:outline-none focus:ring-1 focus:ring-brand-500 text-neutral-900 dark:text-white placeholder-neutral-400 transition" id="chatInput" placeholder="Instruct Copilot (e.g. 'Draft shuttle terms')..." type="text">
+<button class="absolute right-1.5 p-1.5 rounded-lg bg-brand-500 hover:bg-brand-600 text-white transition" title="Send query" type="submit">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M14 5l7 7m0 0l-7 7m7-7H3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</button>
+</input></form>
+<div class="flex items-center justify-between text-[10px] text-neutral-400 mt-2 px-1">
+<span>CelebrateAI v4.5 • End-to-end encrypted</span>
+<span>42,800 tokens remaining</span>
+</div>
+</div>
+</aside>
+</div>
+<!-- TOAST NOTIFICATION CONTAINER -->
+<div class="fixed bottom-5 left-1/2 transform -translate-x-1/2 z-50 pointer-events-none opacity-0 transition-opacity duration-300 bg-neutral-900 text-white dark:bg-white dark:text-neutral-900 px-4 py-2.5 rounded-full text-xs font-semibold shadow-lg flex items-center gap-2" id="toast">
+<span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+<span id="toastMessage">Action completed</span>
+</div>
+<!-- JAVASCRIPT INTERACTIONS -->
+<script>
+    // Theme toggle
+    function toggleTheme() {
+      const html = document.documentElement;
+      if (html.classList.contains('dark')) {
+        html.classList.remove('dark');
+        localStorage.setItem('theme', 'light');
+      } else {
+        html.classList.add('dark');
+        localStorage.setItem('theme', 'dark');
+      }
+    }
+
+    // Toggle persistent Copilot Drawer
+    function toggleCopilotDrawer() {
+      const drawer = document.getElementById('copilotDrawer');
+      drawer.classList.toggle('hidden');
+    }
+
+    // Toast feedback
+    function simulateToast(msg) {
+      const toast = document.getElementById('toast');
+      const toastMessage = document.getElementById('toastMessage');
+      toastMessage.innerText = msg;
+      toast.classList.remove('opacity-0');
+      toast.classList.add('opacity-100');
+      setTimeout(() => {
+        toast.classList.remove('opacity-100');
+        toast.classList.add('opacity-0');
+      }, 2500);
+    }
+
+    // 1-Click Rebalance action
+    function applyRebalance() {
+      const banner = document.getElementById('rebalanceBanner');
+      banner.innerHTML = `
+        <div class="flex items-center justify-between w-full py-1">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center">
+              ✓
+            </div>
+            <div>
+              <span class="text-xs font-bold text-emerald-700 dark:text-emerald-300">Surplus Successfully Rebalanced!</span>
+              <p class="text-[11px] text-neutral-600 dark:text-neutral-400">$700 reallocated from Stationery to Floral & Decor. Safe harbor cushion intact ($6,580.00).</p>
+            </div>
+          </div>
+          <span class="text-xs font-bold text-emerald-600">Complete</span>
+        </div>
+      `;
+      simulateToast('Rebalance applied: $700 surplus reallocated.');
+    }
+
+    function dismissAnomaly() {
+      document.getElementById('rebalanceBanner').style.display = 'none';
+      simulateToast('Anomaly notification dismissed.');
+    }
+
+    function openVendorDraftModal() {
+      const chatInput = document.getElementById('chatInput');
+      chatInput.value = "Draft a formal contract review request to Wild Thyme Catering regarding the 5-course tasting menu.";
+      simulateToast('Draft request populated in Copilot!');
+      const drawer = document.getElementById('copilotDrawer');
+      if (drawer.classList.contains('hidden')) {
+        drawer.classList.remove('hidden');
+      }
+      chatInput.focus();
+    }
+
+    function triggerAiAudit() {
+      simulateToast('Running AI Audit: 4 vendor contracts cross-checked. No hidden corkage detected.');
+    }
+
+    function copyDraftToClipboard() {
+      navigator.clipboard.writeText("Hi Camille & Sonoma Bloom team, Marcus and I adore your vision deck! Could we substitute locally grown Juliet garden roses to keep our original threshold?");
+      simulateToast('Email draft copied to clipboard!');
+    }
+
+    function sendQuickPrompt(promptText) {
+      const chatMessages = document.getElementById('chatMessages');
+      const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+      // Append user msg
+      const userHtml = `
+        <div class="flex items-start justify-end gap-2.5">
+          <div class="space-y-1 max-w-[85%] text-right">
+            <div class="p-3 rounded-2xl rounded-tr-sm bg-brand-500 text-white text-left leading-relaxed shadow-sm">
+              ${promptText}
+            </div>
+            <span class="text-[10px] text-neutral-400 block pr-1">${time} • Elena</span>
+          </div>
+          <img class="w-6 h-6 rounded-full object-cover flex-shrink-0 mt-0.5" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=64&q=80" alt="Elena">
+        </div>
+      `;
+      chatMessages.insertAdjacentHTML('beforeend', userHtml);
+
+      // Simulate AI Answer
+      setTimeout(() => {
+        const aiHtml = `
+          <div class="flex items-start gap-2.5">
+            <div class="w-6 h-6 rounded-lg bg-brand-500/10 text-brand-600 dark:text-brand-400 flex items-center justify-center flex-shrink-0 mt-0.5">✨</div>
+            <div class="space-y-1 max-w-[85%]">
+              <div class="p-3 rounded-2xl rounded-tl-sm bg-neutral-100 dark:bg-neutral-800/80 text-neutral-800 dark:text-neutral-200 leading-relaxed">
+                I've processed "${promptText}". Our Napa harvest data indicates full alignment, preserving your planned itinerary and budget allocations.
+              </div>
+              <span class="text-[10px] text-neutral-400 block pl-1">${time}</span>
+            </div>
+          </div>
+        `;
+        chatMessages.insertAdjacentHTML('beforeend', aiHtml);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      }, 700);
+
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function handleChatSubmit(e) {
+      e.preventDefault();
+      const input = document.getElementById('chatInput');
+      const val = input.value.trim();
+      if (!val) return;
+      sendQuickPrompt(val);
+      input.value = '';
+    }
+
+    function clearChat() {
+      simulateToast('Chat thread cleared.');
+    }
+  </script>
+</body>
+</html>

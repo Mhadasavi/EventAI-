@@ -1,0 +1,6 @@
+{
+  "name": "CelebrateAI - Master Event Planning Dashboard",
+  "description": "GenAI-powered planning assistant for weddings, milestone birthdays, and community events with dynamic blueprints, capital pacing, vendor radar, and Copilot intelligence.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
