@@ -145,11 +145,6 @@ export const Header: React.FC<HeaderProps> = ({
 
         {/* Right Utility Actions */}
         <div className="flex items-center gap-2.5 sm:gap-3">
-          {/* Live AI Status Badge */}
-          <div className="hidden xl:flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-800/50 text-xs font-medium">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span>GenAI Live Engine: Active</span>
-          </div>
 
           {/* Search Trigger for Mobile */}
           <button
@@ -180,14 +175,51 @@ export const Header: React.FC<HeaderProps> = ({
             <span className="w-2 h-2 rounded-full bg-white animate-ping sm:hidden"></span>
           </button>
 
-          {/* Profile Avatar */}
-          <div className="flex items-center gap-2 pl-1 border-l border-neutral-200 dark:border-neutral-800">
-            <div className="relative cursor-pointer group" title="Elena Vasquez (Bride / Host)">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-brand-500 to-amber-400 flex items-center justify-center text-white text-xs font-bold ring-2 ring-brand-500/30">
+          {/* Profile Avatar & Interactive Menu */}
+          <div className="relative pl-1 border-l border-neutral-200 dark:border-neutral-800" ref={dropdownRef}>
+            <button
+              onClick={() => setDropdownOpen(!dropdownOpen)}
+              className="relative cursor-pointer group flex items-center focus:outline-none"
+              title="Elena Vasquez (Bride & Host)"
+              aria-label="User Profile"
+            >
+              <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-brand-500 to-amber-400 flex items-center justify-center text-white text-xs font-bold ring-2 ring-brand-500/30 hover:ring-brand-500/60 transition">
                 EV
               </div>
               <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-500 ring-2 ring-white dark:ring-[#18191e]"></span>
-            </div>
+            </button>
+
+            {dropdownOpen && (
+              <div className="absolute right-0 mt-2 w-64 bg-white dark:bg-[#1a1b20] rounded-2xl border border-neutral-200 dark:border-neutral-800 shadow-xl py-2 z-50 animate-in fade-in duration-150">
+                <div className="px-4 py-2 border-b border-neutral-100 dark:border-neutral-800">
+                  <div className="font-bold text-xs text-neutral-900 dark:text-white">Elena Vasquez</div>
+                  <div className="text-[11px] text-neutral-500 dark:text-neutral-400">Host & Bride • Studio Master</div>
+                  <div className="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold mt-0.5">● Active Session</div>
+                </div>
+                <div className="p-1 space-y-0.5 text-xs">
+                  <button
+                    onClick={() => {
+                      setDropdownOpen(false);
+                      onOpenNewEventModal();
+                    }}
+                    className="w-full flex items-center gap-2 p-2 rounded-xl text-neutral-700 dark:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 text-left transition"
+                  >
+                    <Plus className="w-4 h-4 text-brand-500" />
+                    <span>Create New Event</span>
+                  </button>
+                  <button
+                    onClick={() => {
+                      setDropdownOpen(false);
+                      onOpenSearch();
+                    }}
+                    className="w-full flex items-center gap-2 p-2 rounded-xl text-neutral-700 dark:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 text-left transition"
+                  >
+                    <Search className="w-4 h-4 text-neutral-400" />
+                    <span>Global Search (⌘K)</span>
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>

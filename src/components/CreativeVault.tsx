@@ -5,12 +5,14 @@ import { CreativeDeck } from '../types';
 interface CreativeVaultProps {
   creativeVault: CreativeDeck;
   onOpenBatchModal: () => void;
+  onOpenVaultModal: () => void;
   onToast: (msg: string) => void;
 }
 
 export const CreativeVault: React.FC<CreativeVaultProps> = ({
   creativeVault,
   onOpenBatchModal,
+  onOpenVaultModal,
   onToast,
 }) => {
   const [copiedHex, setCopiedHex] = useState<string | null>(null);
@@ -36,8 +38,8 @@ export const CreativeVault: React.FC<CreativeVaultProps> = ({
           </p>
         </div>
         <button
-          onClick={() => onToast('Opened Creative Vault: 14 curated styling assets & playlist specs!')}
-          className="text-xs font-semibold text-brand-600 dark:text-brand-400 hover:underline"
+          onClick={onOpenVaultModal}
+          className="text-xs font-semibold text-brand-600 dark:text-brand-400 hover:underline cursor-pointer"
         >
           Browse All 14
         </button>

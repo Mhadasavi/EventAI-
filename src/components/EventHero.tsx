@@ -8,6 +8,9 @@ interface EventHeroProps {
   onAddMilestone: () => void;
   onDraftVendorMessage: () => void;
   onAuditContracts: () => void;
+  onOpenRsvp: () => void;
+  onOpenSavings: () => void;
+  onOpenCoPlanner: () => void;
   onToast: (msg: string) => void;
 }
 
@@ -17,6 +20,9 @@ export const EventHero: React.FC<EventHeroProps> = ({
   onAddMilestone,
   onDraftVendorMessage,
   onAuditContracts,
+  onOpenRsvp,
+  onOpenSavings,
+  onOpenCoPlanner,
   onToast,
 }) => {
   // SVG circular gauge calculation
@@ -109,21 +115,33 @@ export const EventHero: React.FC<EventHeroProps> = ({
             </div>
           </div>
 
-          {/* Quick Mini Stat Pills */}
+          {/* Quick Mini Stat Pills - Fully Interactive */}
           <div className="grid grid-cols-2 gap-2 text-left min-w-[170px]">
-            <div className="bg-neutral-50 dark:bg-neutral-900/60 p-2 rounded-xl">
-              <span className="text-[10px] text-neutral-500 dark:text-neutral-400 block uppercase">Guest RSVPs</span>
+            <button
+              onClick={onOpenRsvp}
+              className="bg-neutral-50 dark:bg-neutral-900/60 hover:bg-neutral-100 dark:hover:bg-neutral-900 p-2 rounded-xl text-left border border-transparent hover:border-brand-500/30 transition cursor-pointer group"
+              title="Manage Guest RSVPs & Dietary Matrix"
+            >
+              <span className="text-[10px] text-neutral-500 dark:text-neutral-400 block uppercase group-hover:text-brand-600 transition">
+                Guest RSVPs →
+              </span>
               <span className="text-sm font-bold text-neutral-900 dark:text-white">
                 {event.guestCount}{' '}
                 <span className="text-xs font-normal text-neutral-400">/ {event.guestCapacity}</span>
               </span>
-            </div>
-            <div className="bg-neutral-50 dark:bg-neutral-900/60 p-2 rounded-xl">
-              <span className="text-[10px] text-neutral-500 dark:text-neutral-400 block uppercase">AI Savings</span>
+            </button>
+            <button
+              onClick={onOpenSavings}
+              className="bg-neutral-50 dark:bg-neutral-900/60 hover:bg-neutral-100 dark:hover:bg-neutral-900 p-2 rounded-xl text-left border border-transparent hover:border-amber-500/30 transition cursor-pointer group"
+              title="View 3 Active AI Fiscal Captures"
+            >
+              <span className="text-[10px] text-neutral-500 dark:text-neutral-400 block uppercase group-hover:text-amber-500 transition">
+                AI Savings →
+              </span>
               <span className="text-sm font-bold text-emerald-600 dark:text-emerald-400">
                 +${event.aiDetectedGains.toLocaleString()}
               </span>
-            </div>
+            </button>
           </div>
         </div>
       </div>
@@ -174,10 +192,15 @@ export const EventHero: React.FC<EventHeroProps> = ({
 
         <div className="flex items-center gap-2 text-xs text-neutral-500 dark:text-neutral-400">
           <span>Co-planning with:</span>
-          <span className="inline-flex items-center gap-1 font-medium text-neutral-800 dark:text-neutral-200">
+          <button
+            onClick={onOpenCoPlanner}
+            className="inline-flex items-center gap-1.5 font-medium text-neutral-800 dark:text-neutral-200 hover:text-brand-600 dark:hover:text-brand-400 cursor-pointer p-1 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800 transition"
+            title="Manage Shared Permissions & Collaborators"
+          >
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-            {event.partnerOrHost}
-          </span>
+            <span>{event.partnerOrHost}</span>
+            <span className="text-[10px] text-neutral-400 underline">Manage</span>
+          </button>
         </div>
       </div>
     </section>

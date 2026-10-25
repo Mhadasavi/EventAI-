@@ -33,6 +33,26 @@ export interface Milestone {
   };
 }
 
+export interface Guest {
+  id: string;
+  name: string;
+  email: string;
+  status: 'Confirmed' | 'Declined' | 'Awaiting';
+  partySize: number;
+  dietaryRestrictions?: string;
+  table?: string;
+}
+
+export interface QuoteOption {
+  id: string;
+  vendorName: string;
+  amount: number;
+  vehicleFleet: string;
+  rating: number;
+  inclusions: string[];
+  isRecommended?: boolean;
+}
+
 export interface VendorPartner {
   id: string;
   name: string;

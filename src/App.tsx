@@ -18,6 +18,13 @@ import { VendorDetailModal } from './components/modals/VendorDetailModal';
 import { CocktailBatchModal } from './components/modals/CocktailBatchModal';
 import { NewEventModal } from './components/modals/NewEventModal';
 import { SearchModal } from './components/modals/SearchModal';
+import { RsvpManagerModal } from './components/modals/RsvpManagerModal';
+import { AiSavingsModal } from './components/modals/AiSavingsModal';
+import { DependencyGraphModal } from './components/modals/DependencyGraphModal';
+import { QuoteComparisonModal } from './components/modals/QuoteComparisonModal';
+import { CreativeVaultModal } from './components/modals/CreativeVaultModal';
+import { CoPlannerModal } from './components/modals/CoPlannerModal';
+import { QuoteOption } from './types';
 
 export default function App() {
   const [events, setEvents] = useState<EventData[]>(INITIAL_EVENTS);
@@ -41,6 +48,12 @@ export default function App() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [selectedVendor, setSelectedVendor] = useState<VendorPartner | null>(null);
   const [isCocktailModalOpen, setIsCocktailModalOpen] = useState(false);
+  const [isRsvpOpen, setIsRsvpOpen] = useState(false);
+  const [isAiSavingsOpen, setIsAiSavingsOpen] = useState(false);
+  const [isDependencyGraphOpen, setIsDependencyGraphOpen] = useState(false);
+  const [isQuoteComparisonOpen, setIsQuoteComparisonOpen] = useState(false);
+  const [isCreativeVaultOpen, setIsCreativeVaultOpen] = useState(false);
+  const [isCoPlannerOpen, setIsCoPlannerOpen] = useState(false);
 
   // Toast feedback
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -53,9 +66,11 @@ export default function App() {
     const root = document.documentElement;
     if (isDarkMode) {
       root.classList.add('dark');
+      document.body.classList.add('dark');
       localStorage.setItem('theme', 'dark');
     } else {
       root.classList.remove('dark');
+      document.body.classList.remove('dark');
       localStorage.setItem('theme', 'light');
     }
   }, [isDarkMode]);
@@ -196,6 +211,43 @@ export default function App() {
     setCurrentEventId(newEvent.id);
   };
 
+  // Approve Quote Handler
+  const handleApproveQuote = (quote: QuoteOption) => {
+    setEvents((prev) =>
+      prev.map((evt) => {
+        if (evt.id !== currentEvent.id) return evt;
+        const updatedMs = evt.milestones.map((m) => {
+          if (m.title.toLowerCase().includes('shuttle') || m.id === 'ms-1') {
+            return {
+              ...m,
+              status: 'Completed' as const,
+              relativeDays: 'Booked & Confirmed • ' + quote.vendorName,
+            };
+          }
+          return m;
+        });
+
+        const newVerified = evt.verifiedMilestones + 1;
+        const newScore = Math.min(100, Math.round((newVerified / evt.totalMilestones) * 100));
+
+        return {
+          ...evt,
+          milestones: updatedMs,
+          verifiedMilestones: newVerified,
+          readinessScore: newScore,
+        };
+      })
+    );
+    triggerToast(`Approved & Confirmed: ${quote.vendorName} ($${quote.amount.toLocaleString()})!`);
+  };
+
+  // Update Headcount Handler
+  const handleUpdateGuests = (newCount: number) => {
+    setEvents((prev) =>
+      prev.map((evt) => (evt.id === currentEvent.id ? { ...evt, guestCount: newCount } : evt))
+    );
+  };
+
   // Draft negotiation in Copilot
   const handleDraftNegotiationInCopilot = (vendorName: string, promptText: string) => {
     setIsCopilotOpen(true);
@@ -251,6 +303,9 @@ export default function App() {
                 );
               }}
               onAuditContracts={() => setIsContractAuditOpen(true)}
+              onOpenRsvp={() => setIsRsvpOpen(true)}
+              onOpenSavings={() => setIsAiSavingsOpen(true)}
+              onOpenCoPlanner={() => setIsCoPlannerOpen(true)}
               onToast={triggerToast}
             />
 
@@ -270,6 +325,9 @@ export default function App() {
                 <MilestonesSection
                   milestones={currentEvent.milestones}
                   onToggleMilestone={handleToggleMilestone}
+                  onViewDependency={() => setIsDependencyGraphOpen(true)}
+                  onViewQuotes={() => setIsQuoteComparisonOpen(true)}
+                  onApproveQuotes={() => setIsQuoteComparisonOpen(true)}
                   onToast={triggerToast}
                   onOpenCopilot={(prompt) => {
                     setIsCopilotOpen(true);
@@ -288,6 +346,7 @@ export default function App() {
                 <CreativeVault
                   creativeVault={currentEvent.creativeVault}
                   onOpenBatchModal={() => setIsCocktailModalOpen(true)}
+                  onOpenVaultModal={() => setIsCreativeVaultOpen(true)}
                   onToast={triggerToast}
                 />
               </div>
@@ -364,6 +423,51 @@ export default function App() {
         onClose={() => setIsSearchOpen(false)}
         event={currentEvent}
         onSelectAction={handleSearchAction}
+      />
+
+      <RsvpManagerModal
+        isOpen={isRsvpOpen}
+        onClose={() => setIsRsvpOpen(false)}
+        guestCount={currentEvent.guestCount}
+        guestCapacity={currentEvent.guestCapacity}
+        onUpdateGuests={handleUpdateGuests}
+        onToast={triggerToast}
+      />
+
+      <AiSavingsModal
+        isOpen={isAiSavingsOpen}
+        onClose={() => setIsAiSavingsOpen(false)}
+        totalSavings={currentEvent.aiDetectedGains}
+        onOpenCopilot={(prompt) => {
+          setIsCopilotOpen(true);
+          setCopilotInitialPrompt(prompt);
+        }}
+      />
+
+      <DependencyGraphModal
+        isOpen={isDependencyGraphOpen}
+        onClose={() => setIsDependencyGraphOpen(false)}
+        onToast={triggerToast}
+      />
+
+      <QuoteComparisonModal
+        isOpen={isQuoteComparisonOpen}
+        onClose={() => setIsQuoteComparisonOpen(false)}
+        onApproveQuote={handleApproveQuote}
+      />
+
+      <CreativeVaultModal
+        isOpen={isCreativeVaultOpen}
+        onClose={() => setIsCreativeVaultOpen(false)}
+        onToast={triggerToast}
+        onOpenBatchModal={() => setIsCocktailModalOpen(true)}
+      />
+
+      <CoPlannerModal
+        isOpen={isCoPlannerOpen}
+        onClose={() => setIsCoPlannerOpen(false)}
+        partnerOrHost={currentEvent.partnerOrHost}
+        onToast={triggerToast}
       />
 
       {/* Toast Notification Container */}

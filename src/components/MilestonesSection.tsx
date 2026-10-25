@@ -5,6 +5,9 @@ import { Milestone } from '../types';
 interface MilestonesSectionProps {
   milestones: Milestone[];
   onToggleMilestone: (id: string) => void;
+  onViewDependency: () => void;
+  onViewQuotes: () => void;
+  onApproveQuotes: () => void;
   onToast: (msg: string) => void;
   onOpenCopilot: (prompt: string) => void;
 }
@@ -12,14 +15,18 @@ interface MilestonesSectionProps {
 export const MilestonesSection: React.FC<MilestonesSectionProps> = ({
   milestones,
   onToggleMilestone,
+  onViewDependency,
+  onViewQuotes,
+  onApproveQuotes,
   onToast,
   onOpenCopilot,
 }) => {
-  const [filter, setFilter] = useState<'all' | 'high' | 'blocked'>('all');
+  const [filter, setFilter] = useState<'all' | 'high' | 'blocked' | 'completed'>('all');
 
   const filtered = milestones.filter((m) => {
     if (filter === 'high') return m.priority === 'High';
-    if (filter === 'blocked') return m.status === 'Blocked' || m.blockedBy;
+    if (filter === 'blocked') return m.status === 'Blocked' || !!m.blockedBy;
+    if (filter === 'completed') return m.status === 'Completed';
     return true;
   });
 
@@ -67,6 +74,16 @@ export const MilestonesSection: React.FC<MilestonesSectionProps> = ({
           >
             Blocked
           </button>
+          <button
+            onClick={() => setFilter('completed')}
+            className={`px-2.5 py-1 rounded-lg transition ${
+              filter === 'completed'
+                ? 'bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white font-semibold shadow-xs'
+                : 'text-neutral-500 hover:text-neutral-900 dark:hover:text-white'
+            }`}
+          >
+            Completed
+          </button>
         </div>
       </div>
 
@@ -84,10 +101,10 @@ export const MilestonesSection: React.FC<MilestonesSectionProps> = ({
           </span>
         </div>
         <button
-          onClick={() => onToast('Prerequisite dependency graph verified: Escort Cards await guest list lock.')}
-          className="text-[11px] font-semibold text-amber-700 dark:text-amber-300 underline hover:no-underline whitespace-nowrap"
+          onClick={onViewDependency}
+          className="text-[11px] font-semibold text-amber-700 dark:text-amber-300 underline hover:no-underline whitespace-nowrap cursor-pointer"
         >
-          View Dependency
+          View Dependency Graph
         </button>
       </div>
 
@@ -187,20 +204,14 @@ export const MilestonesSection: React.FC<MilestonesSectionProps> = ({
                 {ms.quoteDetails && (
                   <div className="flex items-center gap-2 mt-2">
                     <button
-                      onClick={() =>
-                        onToast(
-                          `Comparing ${ms.quoteDetails?.count} quotes for ${ms.title}: Napa Sprinters ($1,850), St. Helena Limos ($2,100), Wine Country Transit ($1,920)`
-                        )
-                      }
-                      className="px-2.5 py-1 rounded-lg bg-white dark:bg-neutral-800 text-[11px] font-semibold text-neutral-700 dark:text-neutral-300 border border-neutral-200 dark:border-neutral-700 hover:bg-neutral-50 transition"
+                      onClick={onViewQuotes}
+                      className="px-2.5 py-1 rounded-lg bg-white dark:bg-neutral-800 text-[11px] font-semibold text-neutral-700 dark:text-neutral-300 border border-neutral-200 dark:border-neutral-700 hover:bg-neutral-50 dark:hover:bg-neutral-700 cursor-pointer transition shadow-xs"
                     >
                       View {ms.quoteDetails.count} Quotes (${ms.quoteDetails.amount.toLocaleString()})
                     </button>
                     <button
-                      onClick={() =>
-                        onToast(`Direct Quote Approval Dispatched to ${ms.quoteDetails?.vendor}!`)
-                      }
-                      className="px-2.5 py-1 rounded-lg bg-brand-500 text-[11px] font-semibold text-white hover:bg-brand-600 transition"
+                      onClick={onApproveQuotes}
+                      className="px-2.5 py-1 rounded-lg bg-brand-500 text-[11px] font-semibold text-white hover:bg-brand-600 cursor-pointer transition shadow-xs"
                     >
                       Send Approval
                     </button>
