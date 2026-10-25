@@ -35,7 +35,7 @@ ${cocktail.instructions}`;
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200" role="dialog" aria-modal="true" aria-labelledby="cocktail-batch-title">
       <div className="relative w-full max-w-lg bg-white dark:bg-[#1a1b20] rounded-3xl border border-neutral-200 dark:border-neutral-800 shadow-2xl p-6 space-y-5">
         {/* Header */}
         <div className="flex items-start justify-between pb-3 border-b border-neutral-100 dark:border-neutral-800">
@@ -45,7 +45,7 @@ ${cocktail.instructions}`;
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="font-serif text-lg font-bold text-neutral-900 dark:text-white">
+                <h3 id="cocktail-batch-title" className="font-serif text-lg font-bold text-neutral-900 dark:text-white">
                   {cocktail.name}
                 </h3>
                 <span className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase bg-brand-100 dark:bg-brand-950/60 text-brand-700 dark:text-brand-300">

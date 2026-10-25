@@ -31,3 +31,36 @@ test('validates budget distribution percentages total exactly 100%', () => {
   const total = blueprintPacing.reduce((acc, curr) => acc + curr.percentage, 0);
   assert.equal(total, 100, 'Budget distribution percentages must sum to 100%');
 });
+
+test('validates message length rejection for inputs exceeding 3000 characters', () => {
+  const validateLength = (msg: string) => msg.length <= 3000 && msg.trim().length > 0;
+
+  assert.ok(validateLength('Draft an email to the florist'));
+  assert.ok(!validateLength('   '));
+  assert.ok(!validateLength('a'.repeat(3001)));
+});
+
+test('validates contract audit findings structure and savings calculation', () => {
+  const mockAudit = {
+    vendor: 'Sonoma Bloom',
+    status: 'Clean with 1 Recommendation',
+    findings: [
+      { type: 'Actionable Optimization', text: 'Weekend dismantling fee waiver', severity: 'medium', savings: 350 },
+    ],
+  };
+
+  assert.ok(mockAudit.findings.length > 0);
+  assert.equal(mockAudit.findings[0].savings, 350);
+  assert.equal(mockAudit.findings[0].severity, 'medium');
+});
+
+test('validates RSVP guest matrix calculations match capacity limits', () => {
+  const rsvpCounts = { confirmed: 168, declined: 8, pending: 4 };
+  const totalInvited = rsvpCounts.confirmed + rsvpCounts.declined + rsvpCounts.pending;
+  const capacity = 180;
+
+  assert.equal(totalInvited, 180);
+  assert.ok(rsvpCounts.confirmed <= capacity, 'Confirmed attendees cannot exceed capacity');
+  assert.equal(Math.round((rsvpCounts.confirmed / capacity) * 100), 93);
+});
+

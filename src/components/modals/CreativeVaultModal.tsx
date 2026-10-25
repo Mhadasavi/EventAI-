@@ -57,7 +57,7 @@ export const CreativeVaultModal: React.FC<CreativeVaultModalProps> = ({
   });
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200" role="dialog" aria-modal="true" aria-labelledby="vault-modal-title">
       <div className="relative w-full max-w-4xl max-h-[90vh] bg-white dark:bg-[#1a1b20] rounded-3xl border border-neutral-200 dark:border-neutral-800 shadow-2xl p-6 flex flex-col space-y-5">
         {/* Header */}
         <div className="flex items-center justify-between pb-3 border-b border-neutral-100 dark:border-neutral-800">
@@ -67,7 +67,7 @@ export const CreativeVaultModal: React.FC<CreativeVaultModalProps> = ({
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="font-serif text-xl font-bold text-neutral-900 dark:text-white">
+                <h3 id="vault-modal-title" className="font-serif text-xl font-bold text-neutral-900 dark:text-white">
                   Creative Vault & Sensory Deck
                 </h3>
                 <span className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase bg-brand-100 dark:bg-brand-950/60 text-brand-700 dark:text-brand-300">

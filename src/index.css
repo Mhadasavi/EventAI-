@@ -40,3 +40,18 @@
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(150, 150, 150, 0.45);
 }
+
+@media print {
+  header, aside, .no-print, button, input {
+    display: none !important;
+  }
+  body {
+    background: white !important;
+    color: black !important;
+  }
+  .card, section, div {
+    box-shadow: none !important;
+    border-color: #ddd !important;
+  }
+}
+

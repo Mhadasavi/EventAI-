@@ -65,3 +65,43 @@ test('checkMilestoneDependencies tracks verification and readiness percentage', 
   assert.equal(stats.blockedCount, 1);
   assert.equal(stats.readinessPercentage, 33);
 });
+
+test('calculatePacing handles over-budget state and zero total budget safely', () => {
+  const overBudget = calculatePacing(40000, 45000);
+  assert.equal(overBudget.percentCommitted, 112.5);
+  assert.equal(overBudget.safeHarborCushion, 0, 'Safe harbor cushion cannot be negative');
+  assert.equal(overBudget.percentCushion, 0);
+
+  const zeroBudget = calculatePacing(0, 0);
+  assert.equal(zeroBudget.percentCommitted, 0);
+  assert.equal(zeroBudget.safeHarborCushion, 0);
+  assert.equal(zeroBudget.percentCushion, 0);
+});
+
+test('rebalanceBudget handles zero transfer and non-matching category gracefully', () => {
+  const categories: BudgetCategory[] = [
+    { name: 'Catering', allocated: 10000, color: '#10b981', percentage: 50 },
+    { name: 'Music', allocated: 2000, color: '#6366f1', percentage: 10 },
+  ];
+
+  const zeroTransfer = rebalanceBudget(categories, 'Catering', 'Music', 0);
+  assert.deepEqual(zeroTransfer, categories, 'Zero transfer should return categories untouched');
+
+  const invalidCat = rebalanceBudget(categories, 'NonExistent', 'Music', 500);
+  assert.equal(invalidCat.find((c) => c.name === 'Music')?.allocated, 2500);
+});
+
+test('checkMilestoneDependencies handles empty array and 100% completion cleanly', () => {
+  const emptyStats = checkMilestoneDependencies([]);
+  assert.equal(emptyStats.totalCount, 0);
+  assert.equal(emptyStats.readinessPercentage, 0);
+
+  const allCompleted: Milestone[] = [
+    { id: '1', title: 'Contract Signed', dueDate: '2025-10-01', relativeDays: 'Done', priority: 'High', status: 'Completed', category: 'General' },
+    { id: '2', title: 'Tasting Finalized', dueDate: '2025-10-02', relativeDays: 'Done', priority: 'High', status: 'Completed', category: 'General' },
+  ];
+  const fullStats = checkMilestoneDependencies(allCompleted);
+  assert.equal(fullStats.readinessPercentage, 100);
+  assert.equal(fullStats.blockedCount, 0);
+});
+

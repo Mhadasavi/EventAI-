@@ -1,5 +1,5 @@
 import React from 'react';
-import { Clock, MapPin, Calendar, Plus, MessageSquare, ShieldCheck, CheckCircle2, Users, DollarSign, Sparkles } from 'lucide-react';
+import { Clock, MapPin, Calendar, Plus, MessageSquare, ShieldCheck, CheckCircle2, Users, DollarSign, Sparkles, Download } from 'lucide-react';
 import { EventData } from '../types';
 
 interface EventHeroProps {
@@ -25,6 +25,17 @@ export const EventHero: React.FC<EventHeroProps> = ({
   onOpenCoPlanner,
   onToast,
 }) => {
+  const handleExportBlueprint = () => {
+    const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(event, null, 2));
+    const downloadAnchor = document.createElement('a');
+    downloadAnchor.setAttribute('href', dataStr);
+    downloadAnchor.setAttribute('download', `${event.id}_master_blueprint.json`);
+    document.body.appendChild(downloadAnchor);
+    downloadAnchor.click();
+    downloadAnchor.remove();
+    onToast(`Exported ${event.shortName} Master Blueprint!`);
+  };
+
   // SVG circular gauge calculation
   const radius = 15.9155;
   const circumference = 2 * Math.PI * radius; // ~100
@@ -187,6 +198,16 @@ export const EventHero: React.FC<EventHeroProps> = ({
           >
             <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 animate-pulse" />
             AI Contract & Fee Audit
+          </button>
+
+          {/* [Export Master Blueprint] */}
+          <button
+            onClick={handleExportBlueprint}
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white dark:bg-neutral-800 hover:bg-neutral-50 dark:hover:bg-neutral-700/80 text-neutral-800 dark:text-neutral-100 border border-neutral-200 dark:border-neutral-700 text-xs font-semibold transition active:scale-95"
+            title="Download Master Blueprint and Run-of-Show"
+          >
+            <Download className="w-3.5 h-3.5 text-neutral-500" />
+            Export Blueprint
           </button>
         </div>
 

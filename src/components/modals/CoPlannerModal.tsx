@@ -54,7 +54,7 @@ export const CoPlannerModal: React.FC<CoPlannerModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200" role="dialog" aria-modal="true" aria-labelledby="coplanner-modal-title">
       <div className="relative w-full max-w-lg bg-white dark:bg-[#1a1b20] rounded-3xl border border-neutral-200 dark:border-neutral-800 shadow-2xl p-6 space-y-5">
         {/* Header */}
         <div className="flex items-center justify-between pb-3 border-b border-neutral-100 dark:border-neutral-800">
@@ -63,7 +63,7 @@ export const CoPlannerModal: React.FC<CoPlannerModalProps> = ({
               <Users className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="font-serif text-lg font-bold text-neutral-900 dark:text-white">
+              <h3 id="coplanner-modal-title" className="font-serif text-lg font-bold text-neutral-900 dark:text-white">
                 Co-Planning & Shared Workspace
               </h3>
               <p className="text-xs text-neutral-500">Real-time collaborative editing, ledger sign-offs, and approvals</p>

@@ -56,13 +56,13 @@ export const FullLedgerModal: React.FC<FullLedgerModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200" role="dialog" aria-modal="true" aria-labelledby="full-ledger-title">
       <div className="relative w-full max-w-4xl max-h-[90vh] bg-white dark:bg-[#1a1b20] rounded-3xl border border-neutral-200 dark:border-neutral-800 shadow-2xl p-6 flex flex-col space-y-5">
         {/* Header */}
         <div className="flex items-center justify-between pb-3 border-b border-neutral-100 dark:border-neutral-800">
           <div>
             <div className="flex items-center gap-2">
-              <h3 className="font-serif text-xl font-bold text-neutral-900 dark:text-white">
+              <h3 id="full-ledger-title" className="font-serif text-xl font-bold text-neutral-900 dark:text-white">
                 Comprehensive Capital Ledger
               </h3>
               <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border border-emerald-200/50">

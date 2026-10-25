@@ -18,13 +18,13 @@ export const VendorDetailModal: React.FC<VendorDetailModalProps> = ({
   if (!isOpen || !vendor) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200" role="dialog" aria-modal="true" aria-labelledby="vendor-detail-title">
       <div className="relative w-full max-w-xl bg-white dark:bg-[#1a1b20] rounded-3xl border border-neutral-200 dark:border-neutral-800 shadow-2xl p-6 space-y-5">
         {/* Header */}
         <div className="flex items-start justify-between pb-3 border-b border-neutral-100 dark:border-neutral-800">
           <div>
             <div className="flex items-center gap-2">
-              <h3 className="font-serif text-xl font-bold text-neutral-900 dark:text-white">
+              <h3 id="vendor-detail-title" className="font-serif text-xl font-bold text-neutral-900 dark:text-white">
                 {vendor.name}
               </h3>
               <span

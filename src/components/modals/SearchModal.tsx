@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Search, X, Calendar, DollarSign, Users, Wine, ArrowRight, ShieldCheck, Sparkles } from 'lucide-react';
-import { EventData } from '../../types';
+import { EventData, VendorPartner } from '../../types';
 
 interface SearchModalProps {
   isOpen: boolean;
   onClose: () => void;
   event: EventData;
-  onSelectAction: (actionType: string, payload?: any) => void;
+  onSelectAction: (actionType: string, payload?: string | number | Record<string, unknown> | VendorPartner) => void;
 }
 
 export const SearchModal: React.FC<SearchModalProps> = ({
@@ -48,7 +48,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({
   );
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center pt-20 p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-150">
+    <div className="fixed inset-0 z-50 flex items-start justify-center pt-20 p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-150" role="dialog" aria-modal="true" aria-label="Global Search">
       <div className="relative w-full max-w-2xl bg-white dark:bg-[#1a1b20] rounded-3xl border border-neutral-200 dark:border-neutral-800 shadow-2xl overflow-hidden flex flex-col">
         {/* Search Input bar */}
         <div className="relative flex items-center px-4 py-3.5 border-b border-neutral-200 dark:border-neutral-800">

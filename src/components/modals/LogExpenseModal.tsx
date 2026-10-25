@@ -49,7 +49,7 @@ export const LogExpenseModal: React.FC<LogExpenseModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200" role="dialog" aria-modal="true" aria-labelledby="log-expense-title">
       <div className="relative w-full max-w-lg bg-white dark:bg-[#1a1b20] rounded-3xl border border-neutral-200 dark:border-neutral-800 shadow-2xl p-6 space-y-5">
         <div className="flex items-center justify-between pb-3 border-b border-neutral-100 dark:border-neutral-800">
           <div className="flex items-center gap-2.5">
@@ -57,7 +57,7 @@ export const LogExpenseModal: React.FC<LogExpenseModalProps> = ({
               <DollarSign className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="font-serif text-lg font-bold text-neutral-900 dark:text-white">Log Event Expense</h3>
+              <h3 id="log-expense-title" className="font-serif text-lg font-bold text-neutral-900 dark:text-white">Log Event Expense</h3>
               <p className="text-xs text-neutral-500">Autonomous budget reconciliation & ledger sync</p>
             </div>
           </div>

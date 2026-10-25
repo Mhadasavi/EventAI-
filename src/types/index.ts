@@ -145,6 +145,45 @@ export interface ChatMessage {
     title: string;
     details: string;
     buttonLabel: string;
-    data?: any;
+    data?: Record<string, unknown>;
   };
 }
+
+export interface GeneratedPlanCategory {
+  category: string;
+  amount: number;
+  percentage: number;
+  tip?: string;
+}
+
+export interface GeneratedPlanMilestone {
+  title: string;
+  daysBefore?: number;
+  priority?: 'High' | 'Medium' | 'Low';
+  dependency?: string;
+}
+
+export interface GeneratedPlanVendor {
+  name: string;
+  category: string;
+  estimatedCost: number;
+  status?: string;
+  action?: string;
+}
+
+export interface GeneratedEventPlan {
+  name: string;
+  summary: string;
+  budgetBreakdown: GeneratedPlanCategory[];
+  milestones: GeneratedPlanMilestone[];
+  vendors: GeneratedPlanVendor[];
+  creativeVault?: {
+    cocktail?: {
+      name: string;
+      description: string;
+      costPerGuest: number;
+    };
+    palette?: { name: string; hex: string }[];
+  };
+}
+

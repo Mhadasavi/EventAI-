@@ -1,6 +1,12 @@
 import React, { useState } from 'react';
 import { X, Sparkles, Calendar, Users, MapPin, DollarSign, Wand2, Compass } from 'lucide-react';
-import { EventData } from '../../types';
+import {
+  EventData,
+  GeneratedEventPlan,
+  GeneratedPlanCategory,
+  GeneratedPlanMilestone,
+  GeneratedPlanVendor,
+} from '../../types';
 
 interface NewEventModalProps {
   isOpen: boolean;
@@ -75,13 +81,13 @@ export const NewEventModal: React.FC<NewEventModalProps> = ({
         committedBudget: Math.round(budget * 0.4),
         safeHarborCushion: Math.round(budget * 0.15),
         aiDetectedGains: 1200,
-        categories: (plan.budgetBreakdown || []).map((b: any, idx: number) => ({
+        categories: (plan.budgetBreakdown || []).map((b: GeneratedPlanCategory, idx: number) => ({
           name: b.category,
           allocated: b.amount,
           color: ['#964330', '#c86d56', '#f59e0b', '#10b981', '#8c6b32', '#6366f1'][idx % 6],
           percentage: b.percentage,
         })),
-        items: (plan.budgetBreakdown || []).map((b: any, idx: number) => ({
+        items: (plan.budgetBreakdown || []).map((b: GeneratedPlanCategory, idx: number) => ({
           id: `item-gen-${idx}`,
           category: b.category,
           name: `${b.category} Core Allocation`,
@@ -90,17 +96,17 @@ export const NewEventModal: React.FC<NewEventModalProps> = ({
           status: 'Estimated' as const,
           notes: b.tip,
         })),
-        milestones: (plan.milestones || []).map((m: any, idx: number) => ({
+        milestones: (plan.milestones || []).map((m: GeneratedPlanMilestone, idx: number) => ({
           id: `ms-gen-${idx}`,
           title: m.title,
           dueDate: 'Milestone Date',
-          relativeDays: `T-minus ${m.daysBefore} days`,
+          relativeDays: `T-minus ${m.daysBefore || 60} days`,
           priority: m.priority || 'High',
           status: 'Pending' as const,
           category: 'Execution',
           blockedBy: m.dependency !== 'None' ? m.dependency : undefined,
         })),
-        vendors: (plan.vendors || []).map((v: any, idx: number) => ({
+        vendors: (plan.vendors || []).map((v: GeneratedPlanVendor, idx: number) => ({
           id: `v-gen-${idx}`,
           name: v.name,
           category: v.category,
@@ -129,7 +135,11 @@ export const NewEventModal: React.FC<NewEventModalProps> = ({
           },
           paletteName: `${vibe.split(' ')[0]} Palette`,
           paletteId: '#GEN-902',
-          swatches: plan.creativeVault?.palette || [
+          swatches: plan.creativeVault?.palette ? plan.creativeVault.palette.map((p: { name: string; hex: string }, i: number) => ({
+            name: p.name,
+            hex: p.hex,
+            role: ['Hero', 'Secondary', 'Linen', 'Accent'][i % 4],
+          })) : [
             { name: 'Primary Terracotta', hex: '#C86D56', role: 'Hero' },
             { name: 'Olive Leaf', hex: '#8C6B32', role: 'Secondary' },
             { name: 'Blush Sand', hex: '#F2D8CC', role: 'Linen' },
@@ -143,15 +153,16 @@ export const NewEventModal: React.FC<NewEventModalProps> = ({
       onCreateEvent(newEvent);
       onToast(`Master Blueprint generated for ${title}!`);
       onClose();
-    } catch (err: any) {
-      onToast('Error generating blueprint: ' + err.message);
+    } catch (err: unknown) {
+      const errorMsg = err instanceof Error ? err.message : 'Unknown generation error';
+      onToast('Error generating blueprint: ' + errorMsg);
     } finally {
       setIsGenerating(false);
     }
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200" role="dialog" aria-modal="true" aria-labelledby="new-event-title">
       <div className="relative w-full max-w-xl bg-white dark:bg-[#1a1b20] rounded-3xl border border-neutral-200 dark:border-neutral-800 shadow-2xl p-6 space-y-5">
         {/* Header */}
         <div className="flex items-center justify-between pb-3 border-b border-neutral-100 dark:border-neutral-800">
@@ -160,7 +171,7 @@ export const NewEventModal: React.FC<NewEventModalProps> = ({
               <Wand2 className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="font-serif text-xl font-bold text-neutral-900 dark:text-white">
+              <h3 id="new-event-title" className="font-serif text-xl font-bold text-neutral-900 dark:text-white">
                 GenAI Master Event Architect
               </h3>
               <p className="text-xs text-neutral-500">

@@ -47,7 +47,7 @@ export const AiSavingsModal: React.FC<AiSavingsModalProps> = ({
   ];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200" role="dialog" aria-modal="true" aria-labelledby="ai-savings-title">
       <div className="relative w-full max-w-xl bg-white dark:bg-[#1a1b20] rounded-3xl border border-neutral-200 dark:border-neutral-800 shadow-2xl p-6 space-y-5">
         {/* Header */}
         <div className="flex items-center justify-between pb-3 border-b border-neutral-100 dark:border-neutral-800">
@@ -57,7 +57,7 @@ export const AiSavingsModal: React.FC<AiSavingsModalProps> = ({
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="font-serif text-lg font-bold text-neutral-900 dark:text-white">
+                <h3 id="ai-savings-title" className="font-serif text-lg font-bold text-neutral-900 dark:text-white">
                   Autonomous AI Fiscal Captures
                 </h3>
                 <span className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300">

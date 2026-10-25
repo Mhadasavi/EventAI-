@@ -30,3 +30,19 @@ test('verifies Rule DEP-882 dependency lock exists in default wedding event', ()
   assert.equal(escortTask.status, 'Blocked', 'Escort cards task must initially be locked by dependency rule');
   assert.ok(escortTask.blockedBy?.includes('DEP-882'), 'Blocked reason must reference Rule DEP-882');
 });
+
+test('verifies event ID uniqueness and workspace switching lookup integrity', () => {
+  const ids = INITIAL_EVENTS.map((e) => e.id);
+  const uniqueIds = new Set(ids);
+  assert.equal(ids.length, uniqueIds.size, 'All event IDs must be strictly unique');
+
+  // Verify switching between all available events returns distinct data
+  INITIAL_EVENTS.forEach((targetEvent) => {
+    const selected = INITIAL_EVENTS.find((e) => e.id === targetEvent.id);
+    assert.ok(selected, `Event lookup for ${targetEvent.id} must succeed`);
+    assert.equal(selected.id, targetEvent.id);
+    assert.equal(selected.name, targetEvent.name);
+    assert.equal(selected.shortName, targetEvent.shortName);
+  });
+});
+

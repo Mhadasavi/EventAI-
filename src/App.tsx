@@ -259,13 +259,13 @@ export default function App() {
   };
 
   // Search Action Dispatcher
-  const handleSearchAction = (actionType: string, payload?: any) => {
+  const handleSearchAction = (actionType: string, payload?: string | number | Record<string, unknown> | VendorPartner) => {
     if (actionType === 'log-expense') setIsLogExpenseOpen(true);
     else if (actionType === 'add-milestone') setIsAddMilestoneOpen(true);
     else if (actionType === 'audit-contracts') setIsContractAuditOpen(true);
     else if (actionType === 'full-ledger') setIsFullLedgerOpen(true);
-    else if (actionType === 'vendor-detail' && payload) setSelectedVendor(payload);
-    else if (actionType === 'ask-copilot' && payload) {
+    else if (actionType === 'vendor-detail' && payload && typeof payload === 'object') setSelectedVendor(payload as VendorPartner);
+    else if (actionType === 'ask-copilot' && typeof payload === 'string') {
       setIsCopilotOpen(true);
       setCopilotInitialPrompt(payload);
     }
