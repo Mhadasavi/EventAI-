@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { ChevronRight, AlertTriangle, ArrowRightLeft, Check, X } from 'lucide-react';
+import React from 'react';
+import { ChevronRight, AlertTriangle, ArrowRightLeft, Check } from 'lucide-react';
 import { EventData } from '../types';
 
 interface FinancialPulseProps {
@@ -181,7 +181,7 @@ export const FinancialPulse: React.FC<FinancialPulseProps> = ({
                     </span>
                   </div>
                   <p className="text-xs text-neutral-600 dark:text-neutral-300 mt-1 leading-relaxed">
-                    Sonoma Bloom's upgraded arbor exceeds the baseline cap. CelebrateAI detects{' '}
+                    Sonoma Bloom's upgraded arbor exceeds the baseline cap. EventAI detects{' '}
                     <span className="font-bold text-neutral-900 dark:text-white">$1,300 uncommitted surplus</span> in
                     the Printed Stationery line. Rebalancing preserves your full{' '}
                     <span className="font-bold text-emerald-600">${event.safeHarborCushion.toLocaleString()} Safe Harbor buffer</span>.

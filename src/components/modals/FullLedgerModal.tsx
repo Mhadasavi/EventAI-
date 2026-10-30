@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { X, Download, Filter, Search, CheckCircle2, Clock, AlertTriangle } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { X, Download, Search, CheckCircle2, Clock } from 'lucide-react';
 import { BudgetItem, BudgetCategory } from '../../types';
 
 interface FullLedgerModalProps {
@@ -23,6 +23,18 @@ export const FullLedgerModal: React.FC<FullLedgerModalProps> = ({
 }) => {
   const [filterCat, setFilterCat] = useState<string>('All');
   const [search, setSearch] = useState('');
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.stopPropagation();
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
@@ -49,14 +61,23 @@ export const FullLedgerModal: React.FC<FullLedgerModalProps> = ({
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement('a');
     link.setAttribute('href', encodedUri);
-    link.setAttribute('download', `CelebrateAI_Event_Ledger_${Date.now()}.csv`);
+    link.setAttribute('download', `EventAI_Event_Ledger_${Date.now()}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200" role="dialog" aria-modal="true" aria-labelledby="full-ledger-title">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="full-ledger-title"
+      tabIndex={-1}
+      onKeyDown={(e) => {
+        if (e.key === 'Escape') onClose();
+      }}
+    >
       <div className="relative w-full max-w-4xl max-h-[90vh] bg-white dark:bg-[#1a1b20] rounded-3xl border border-neutral-200 dark:border-neutral-800 shadow-2xl p-6 flex flex-col space-y-5">
         {/* Header */}
         <div className="flex items-center justify-between pb-3 border-b border-neutral-100 dark:border-neutral-800">
@@ -83,7 +104,8 @@ export const FullLedgerModal: React.FC<FullLedgerModalProps> = ({
             </button>
             <button
               onClick={onClose}
-              className="p-1.5 rounded-xl text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition"
+              aria-label="Close dialog"
+            className="p-1.5 rounded-xl text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition"
             >
               <X className="w-5 h-5" />
             </button>

@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
-import { X, Users, CheckCircle2, Clock, XCircle, Plus, Search, Mail, Utensils, Send } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { X, Users, Plus, Search, Send } from 'lucide-react';
 import { Guest } from '../../types';
+import { INITIAL_GUESTS } from '../../data/mockGuests';
+import { GuestRow } from '../rsvp/GuestRow';
 
 interface RsvpManagerModalProps {
   isOpen: boolean;
@@ -11,17 +13,6 @@ interface RsvpManagerModalProps {
   onToast: (msg: string) => void;
 }
 
-const INITIAL_GUESTS: Guest[] = [
-  { id: 'g-1', name: 'Julian & Sofia Vance', email: 'julian.vance@example.com', status: 'Confirmed', partySize: 2, dietaryRestrictions: '1 Dairy-Free (Chef informed)', table: 'Table 1 • Olive Grove' },
-  { id: 'g-2', name: 'Victoria & Arthur Sterling', email: 'vsterling@example.com', status: 'Confirmed', partySize: 2, dietaryRestrictions: 'None', table: 'Table 2 • Colonnade' },
-  { id: 'g-3', name: 'Dr. Alejandro Morales', email: 'amorales@berkeley.edu', status: 'Confirmed', partySize: 1, dietaryRestrictions: 'Pescatarian', table: 'Table 3 • Vineyard Lawn' },
-  { id: 'g-4', name: 'Camille & Patrick Dubois', email: 'camille@sonomabloom.com', status: 'Confirmed', partySize: 2, dietaryRestrictions: 'Gluten-Free', table: 'Table 1 • Olive Grove' },
-  { id: 'g-5', name: 'Nora & Sam Chen', email: 'sam.chen@techcorp.io', status: 'Confirmed', partySize: 2, dietaryRestrictions: 'Vegetarian', table: 'Table 4 • Terrace' },
-  { id: 'g-6', name: 'Lucas H. & Partner', email: 'lucas.h@example.com', status: 'Awaiting', partySize: 2, dietaryRestrictions: 'Awaiting dietary response', table: 'Unassigned' },
-  { id: 'g-7', name: 'Claire Montgomery', email: 'claire.m@nycart.org', status: 'Awaiting', partySize: 1, dietaryRestrictions: 'Pending confirmation', table: 'Unassigned' },
-  { id: 'g-8', name: 'Robert & Sarah Henderson', email: 'r.henderson@chicago.net', status: 'Confirmed', partySize: 2, dietaryRestrictions: 'Nut Allergy (Severe)', table: 'Table 2 • Colonnade' },
-];
-
 export const RsvpManagerModal: React.FC<RsvpManagerModalProps> = ({
   isOpen,
   onClose,
@@ -31,50 +22,66 @@ export const RsvpManagerModal: React.FC<RsvpManagerModalProps> = ({
   onToast,
 }) => {
   const [guests, setGuests] = useState<Guest[]>(INITIAL_GUESTS);
-  const [filter, setFilter] = useState<'All' | 'Confirmed' | 'Awaiting'>('All');
-  const [search, setSearch] = useState('');
-  const [isAdding, setIsAdding] = useState(false);
+  const [uiState, setUiState] = useState({
+    filter: 'All' as 'All' | 'Confirmed' | 'Awaiting',
+    search: '',
+    isAdding: false,
+    name: '',
+    email: '',
+    partySize: 1,
+    dietary: '',
+  });
 
-  // New guest form
-  const [newName, setNewName] = useState('');
-  const [newEmail, setNewEmail] = useState('');
-  const [newPartySize, setNewPartySize] = useState(1);
-  const [newDietary, setNewDietary] = useState('');
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.stopPropagation();
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
   const filteredGuests = guests.filter((g) => {
-    const matchesFilter = filter === 'All' || g.status === filter;
+    const matchesFilter = uiState.filter === 'All' || g.status === uiState.filter;
+    const q = uiState.search.toLowerCase();
     const matchesSearch =
-      g.name.toLowerCase().includes(search.toLowerCase()) ||
-      g.email.toLowerCase().includes(search.toLowerCase()) ||
-      (g.dietaryRestrictions && g.dietaryRestrictions.toLowerCase().includes(search.toLowerCase()));
+      g.name.toLowerCase().includes(q) ||
+      g.email.toLowerCase().includes(q) ||
+      (g.dietaryRestrictions && g.dietaryRestrictions.toLowerCase().includes(q));
     return matchesFilter && matchesSearch;
   });
 
   const handleAddGuest = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newName.trim()) return;
+    if (!uiState.name.trim()) return;
 
     const newG: Guest = {
       id: `g-${Date.now()}`,
-      name: newName.trim(),
-      email: newEmail.trim() || 'guest@example.com',
+      name: uiState.name.trim(),
+      email: uiState.email.trim() || 'guest@example.com',
       status: 'Confirmed',
-      partySize: newPartySize,
-      dietaryRestrictions: newDietary.trim() || 'Standard Menu',
+      partySize: uiState.partySize,
+      dietaryRestrictions: uiState.dietary.trim() || 'Standard Menu',
       table: 'Pending Table Assignment',
     };
 
     setGuests((prev) => [newG, ...prev]);
-    const updatedCount = guestCount + newPartySize;
+    const updatedCount = guestCount + uiState.partySize;
     onUpdateGuests(updatedCount);
-    onToast(`Added ${newName} (${newPartySize} guest${newPartySize > 1 ? 's' : ''}) to RSVP list!`);
-    setNewName('');
-    setNewEmail('');
-    setNewPartySize(1);
-    setNewDietary('');
-    setIsAdding(false);
+    onToast(`Added ${uiState.name} (${uiState.partySize} guest${uiState.partySize > 1 ? 's' : ''}) to RSVP list!`);
+    setUiState((prev) => ({
+      ...prev,
+      name: '',
+      email: '',
+      partySize: 1,
+      dietary: '',
+      isAdding: false,
+    }));
   };
 
   const handleSendReminders = () => {
@@ -82,7 +89,16 @@ export const RsvpManagerModal: React.FC<RsvpManagerModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200" role="dialog" aria-modal="true" aria-labelledby="rsvp-modal-title">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="rsvp-modal-title"
+      tabIndex={-1}
+      onKeyDown={(e) => {
+        if (e.key === 'Escape') onClose();
+      }}
+    >
       <div className="relative w-full max-w-3xl max-h-[90vh] bg-white dark:bg-[#1a1b20] rounded-3xl border border-neutral-200 dark:border-neutral-800 shadow-2xl p-6 flex flex-col space-y-5">
         {/* Header */}
         <div className="flex items-center justify-between pb-3 border-b border-neutral-100 dark:border-neutral-800">
@@ -104,6 +120,7 @@ export const RsvpManagerModal: React.FC<RsvpManagerModalProps> = ({
           </div>
           <button
             onClick={onClose}
+            aria-label="Close dialog"
             className="p-1.5 rounded-xl text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition"
           >
             <X className="w-5 h-5" />
@@ -139,8 +156,8 @@ export const RsvpManagerModal: React.FC<RsvpManagerModalProps> = ({
               <Search className="w-3.5 h-3.5 absolute left-3 top-2.5 text-neutral-400" />
               <input
                 type="text"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
+                value={uiState.search}
+                onChange={(e) => setUiState((p) => ({ ...p, search: e.target.value }))}
                 placeholder="Search guest name or dietary note..."
                 className="w-full pl-8 pr-3 py-1.5 text-xs rounded-xl bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 text-neutral-900 dark:text-white"
               />
@@ -152,9 +169,9 @@ export const RsvpManagerModal: React.FC<RsvpManagerModalProps> = ({
               {(['All', 'Confirmed', 'Awaiting'] as const).map((tab) => (
                 <button
                   key={tab}
-                  onClick={() => setFilter(tab)}
+                  onClick={() => setUiState((p) => ({ ...p, filter: tab }))}
                   className={`px-3 py-1 rounded-lg font-medium transition ${
-                    filter === tab
+                    uiState.filter === tab
                       ? 'bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white font-semibold shadow-xs'
                       : 'text-neutral-500 hover:text-neutral-900 dark:hover:text-white'
                   }`}
@@ -165,7 +182,7 @@ export const RsvpManagerModal: React.FC<RsvpManagerModalProps> = ({
             </div>
 
             <button
-              onClick={() => setIsAdding(!isAdding)}
+              onClick={() => setUiState((p) => ({ ...p, isAdding: !p.isAdding }))}
               className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-brand-500 hover:bg-brand-600 text-white text-xs font-semibold shadow-xs transition"
             >
               <Plus className="w-3.5 h-3.5" />
@@ -183,22 +200,22 @@ export const RsvpManagerModal: React.FC<RsvpManagerModalProps> = ({
         </div>
 
         {/* Add guest form drawer */}
-        {isAdding && (
+        {uiState.isAdding && (
           <form onSubmit={handleAddGuest} className="p-3.5 rounded-2xl bg-brand-50/50 dark:bg-neutral-900 border border-brand-200/60 dark:border-neutral-800 space-y-3 animate-in fade-in">
             <div className="font-semibold text-xs text-neutral-900 dark:text-white">Quick Add Confirmed Guest</div>
             <div className="grid grid-cols-1 sm:grid-cols-4 gap-2 text-xs">
               <input
                 type="text"
                 required
-                value={newName}
-                onChange={(e) => setNewName(e.target.value)}
+                value={uiState.name}
+                onChange={(e) => setUiState((p) => ({ ...p, name: e.target.value }))}
                 placeholder="Full Name (e.g. David Sterling)"
                 className="px-3 py-1.5 rounded-xl bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 text-neutral-900 dark:text-white"
               />
               <input
                 type="email"
-                value={newEmail}
-                onChange={(e) => setNewEmail(e.target.value)}
+                value={uiState.email}
+                onChange={(e) => setUiState((p) => ({ ...p, email: e.target.value }))}
                 placeholder="Email address"
                 className="px-3 py-1.5 rounded-xl bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 text-neutral-900 dark:text-white"
               />
@@ -206,15 +223,15 @@ export const RsvpManagerModal: React.FC<RsvpManagerModalProps> = ({
                 type="number"
                 min={1}
                 max={10}
-                value={newPartySize}
-                onChange={(e) => setNewPartySize(parseInt(e.target.value) || 1)}
+                value={uiState.partySize}
+                onChange={(e) => setUiState((p) => ({ ...p, partySize: parseInt(e.target.value) || 1 }))}
                 placeholder="Party Size"
                 className="px-3 py-1.5 rounded-xl bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 text-neutral-900 dark:text-white"
               />
               <input
                 type="text"
-                value={newDietary}
-                onChange={(e) => setNewDietary(e.target.value)}
+                value={uiState.dietary}
+                onChange={(e) => setUiState((p) => ({ ...p, dietary: e.target.value }))}
                 placeholder="Dietary requirements..."
                 className="px-3 py-1.5 rounded-xl bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 text-neutral-900 dark:text-white"
               />
@@ -222,7 +239,7 @@ export const RsvpManagerModal: React.FC<RsvpManagerModalProps> = ({
             <div className="flex justify-end gap-2">
               <button
                 type="button"
-                onClick={() => setIsAdding(false)}
+                onClick={() => setUiState((p) => ({ ...p, isAdding: false }))}
                 className="px-3 py-1 text-xs text-neutral-500 hover:text-neutral-700"
               >
                 Cancel
@@ -250,33 +267,7 @@ export const RsvpManagerModal: React.FC<RsvpManagerModalProps> = ({
             </thead>
             <tbody className="divide-y divide-neutral-100 dark:divide-neutral-800 text-neutral-700 dark:text-neutral-200">
               {filteredGuests.map((g) => (
-                <tr key={g.id} className="hover:bg-neutral-50/50 dark:hover:bg-neutral-900/40">
-                  <td className="py-3 px-3">
-                    <div className="font-semibold text-neutral-900 dark:text-white">{g.name}</div>
-                    <div className="text-[11px] text-neutral-400">{g.email} • {g.partySize} guest{g.partySize > 1 ? 's' : ''}</div>
-                  </td>
-                  <td className="py-3 px-3">
-                    <span
-                      className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold ${
-                        g.status === 'Confirmed'
-                          ? 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300'
-                          : 'bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300'
-                      }`}
-                    >
-                      {g.status === 'Confirmed' ? <CheckCircle2 className="w-3 h-3" /> : <Clock className="w-3 h-3" />}
-                      {g.status}
-                    </span>
-                  </td>
-                  <td className="py-3 px-3">
-                    <div className="flex items-center gap-1.5 text-neutral-600 dark:text-neutral-300">
-                      <Utensils className="w-3.5 h-3.5 text-brand-500 flex-shrink-0" />
-                      <span>{g.dietaryRestrictions || 'None reported'}</span>
-                    </div>
-                  </td>
-                  <td className="py-3 px-3 font-medium text-neutral-500 dark:text-neutral-400">
-                    {g.table || 'Unassigned'}
-                  </td>
-                </tr>
+                <GuestRow key={g.id} guest={g} />
               ))}
             </tbody>
           </table>

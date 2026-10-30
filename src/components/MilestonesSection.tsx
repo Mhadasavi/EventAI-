@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Lock, CheckCircle2, Clock, AlertCircle, ChevronRight, ExternalLink } from 'lucide-react';
+import { Lock } from 'lucide-react';
 import { Milestone } from '../types';
 
 interface MilestonesSectionProps {
@@ -120,7 +120,7 @@ export const MilestonesSection: React.FC<MilestonesSectionProps> = ({
                 key={ms.id}
                 className="group flex items-start gap-3.5 p-3.5 rounded-2xl bg-neutral-100/40 dark:bg-neutral-900/20 border border-dashed border-neutral-300 dark:border-neutral-800 opacity-80"
               >
-                <div className="mt-0.5 text-neutral-400">
+                <div className="mt-0.5 text-neutral-400 cursor-pointer" onClick={() => { onOpenCopilot(`How do I resolve dependency lock on "${ms.title}"?`); onToast(`Asking Copilot about ${ms.title}...`); }}>
                   <Lock className="w-4 h-4" />
                 </div>
                 <div className="flex-1 min-w-0">

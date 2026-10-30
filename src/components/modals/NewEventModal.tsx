@@ -1,12 +1,7 @@
-import React, { useState } from 'react';
-import { X, Sparkles, Calendar, Users, MapPin, DollarSign, Wand2, Compass } from 'lucide-react';
-import {
-  EventData,
-  GeneratedEventPlan,
-  GeneratedPlanCategory,
-  GeneratedPlanMilestone,
-  GeneratedPlanVendor,
-} from '../../types';
+import React, { useState, useEffect } from 'react';
+import { X, Calendar, MapPin, DollarSign, Wand2, Compass } from 'lucide-react';
+import { EventData } from '../../types';
+import { buildEventFromBlueprint } from '../../utils/blueprintBuilder';
 
 interface NewEventModalProps {
   isOpen: boolean;
@@ -21,20 +16,41 @@ export const NewEventModal: React.FC<NewEventModalProps> = ({
   onCreateEvent,
   onToast,
 }) => {
-  const [eventType, setEventType] = useState<'wedding' | 'birthday' | 'community' | 'gala'>('wedding');
-  const [title, setTitle] = useState('');
-  const [dateStr, setDateStr] = useState('');
-  const [location, setLocation] = useState('');
-  const [guestCount, setGuestCount] = useState(120);
-  const [budget, setBudget] = useState(35000);
-  const [vibe, setVibe] = useState('Modern Romantic & Warm Terracotta');
+  const [form, setForm] = useState({
+    eventType: 'wedding' as EventData['type'],
+    title: '',
+    dateStr: '',
+    location: '',
+    guestCount: 120,
+    budget: 35000,
+    vibe: 'Modern Romantic & Warm Terracotta',
+  });
   const [isGenerating, setIsGenerating] = useState(false);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.stopPropagation();
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Escape') {
+      e.stopPropagation();
+      onClose();
+    }
+  };
+
   const handleGenerate = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!title.trim() || !location.trim() || !dateStr) return;
+    if (!form.title.trim() || !form.location.trim() || !form.dateStr) return;
 
     setIsGenerating(true);
     try {
@@ -42,116 +58,20 @@ export const NewEventModal: React.FC<NewEventModalProps> = ({
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          eventType,
-          title,
-          guestCount,
-          location,
-          totalBudget: budget,
-          vibe,
+          eventType: form.eventType,
+          title: form.title,
+          guestCount: form.guestCount,
+          location: form.location,
+          totalBudget: form.budget,
+          vibe: form.vibe,
         }),
       });
 
       const plan = await response.json();
-
-      const newEvent: EventData = {
-        id: `event-${Date.now()}`,
-        type: eventType,
-        name: title.trim(),
-        shortName: title.trim().split(' ').slice(0, 4).join(' '),
-        dateStr: new Date(dateStr).toLocaleDateString('en-US', {
-          weekday: 'long',
-          month: 'short',
-          day: 'numeric',
-          year: 'numeric',
-        }),
-        daysRemaining: Math.max(
-          1,
-          Math.ceil((new Date(dateStr).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))
-        ),
-        location: location.trim(),
-        venueName: location.split('•')[0]?.trim() || location,
-        partnerOrHost: 'Host & Planning Committee',
-        guestCount,
-        guestCapacity: Math.round(guestCount * 1.15),
-        summary: plan.summary || `GenAI autonomous master plan tailored for ${guestCount} guests in ${location}.`,
-        readinessScore: 65,
-        verifiedMilestones: 8,
-        totalMilestones: 20,
-        totalBudget: budget,
-        committedBudget: Math.round(budget * 0.4),
-        safeHarborCushion: Math.round(budget * 0.15),
-        aiDetectedGains: 1200,
-        categories: (plan.budgetBreakdown || []).map((b: GeneratedPlanCategory, idx: number) => ({
-          name: b.category,
-          allocated: b.amount,
-          color: ['#964330', '#c86d56', '#f59e0b', '#10b981', '#8c6b32', '#6366f1'][idx % 6],
-          percentage: b.percentage,
-        })),
-        items: (plan.budgetBreakdown || []).map((b: GeneratedPlanCategory, idx: number) => ({
-          id: `item-gen-${idx}`,
-          category: b.category,
-          name: `${b.category} Core Allocation`,
-          allocated: b.amount,
-          actual: b.amount,
-          status: 'Estimated' as const,
-          notes: b.tip,
-        })),
-        milestones: (plan.milestones || []).map((m: GeneratedPlanMilestone, idx: number) => ({
-          id: `ms-gen-${idx}`,
-          title: m.title,
-          dueDate: 'Milestone Date',
-          relativeDays: `T-minus ${m.daysBefore || 60} days`,
-          priority: m.priority || 'High',
-          status: 'Pending' as const,
-          category: 'Execution',
-          blockedBy: m.dependency !== 'None' ? m.dependency : undefined,
-        })),
-        vendors: (plan.vendors || []).map((v: GeneratedPlanVendor, idx: number) => ({
-          id: `v-gen-${idx}`,
-          name: v.name,
-          category: v.category,
-          role: v.category,
-          status: v.status || 'Proposed',
-          totalContract: v.estimatedCost,
-          paidAmount: 0,
-          statusNote: v.action || 'Review quote',
-          contactName: 'Partner Representative',
-          contactEmail: 'contact@partner.com',
-          keyDeliverables: ['Contracted deliverables package'],
-          nextMilestone: 'Initial vendor qualification call',
-        })),
-        creativeVault: {
-          cocktail: plan.creativeVault?.cocktail || {
-            name: 'Sunset Spritz',
-            tagline: 'Signature Toast',
-            costPerGuest: 7.5,
-            matchScore: 97,
-            description: 'Botanical aperitif, sparkling prosecco, blood orange and thyme sprig.',
-            ingredients: [
-              { name: 'Sparkling Prosecco', perDrink: '4.0 oz', forBatch168: '24 bottles' },
-              { name: 'Blood Orange Syrup', perDrink: '0.75 oz', forBatch168: '1 gallon' },
-            ],
-            instructions: 'Stir over ice and serve chilled with orange wheel.',
-          },
-          paletteName: `${vibe.split(' ')[0]} Palette`,
-          paletteId: '#GEN-902',
-          swatches: plan.creativeVault?.palette ? plan.creativeVault.palette.map((p: { name: string; hex: string }, i: number) => ({
-            name: p.name,
-            hex: p.hex,
-            role: ['Hero', 'Secondary', 'Linen', 'Accent'][i % 4],
-          })) : [
-            { name: 'Primary Terracotta', hex: '#C86D56', role: 'Hero' },
-            { name: 'Olive Leaf', hex: '#8C6B32', role: 'Secondary' },
-            { name: 'Blush Sand', hex: '#F2D8CC', role: 'Linen' },
-            { name: 'Deep Spruce', hex: '#1D5249', role: 'Accent' },
-          ],
-          paletteUsageNotes: 'Optimized for high emotional impact and tactile stationery.',
-          soundtrackVibe: 'Curated ambient acoustic melodies with upbeat evening transitions.',
-        },
-      };
+      const newEvent = buildEventFromBlueprint(form, plan);
 
       onCreateEvent(newEvent);
-      onToast(`Master Blueprint generated for ${title}!`);
+      onToast(`Master Blueprint generated for ${form.title}!`);
       onClose();
     } catch (err: unknown) {
       const errorMsg = err instanceof Error ? err.message : 'Unknown generation error';
@@ -162,7 +82,14 @@ export const NewEventModal: React.FC<NewEventModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200" role="dialog" aria-modal="true" aria-labelledby="new-event-title">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="new-event-title"
+      tabIndex={-1}
+      onKeyDown={handleKeyDown}
+    >
       <div className="relative w-full max-w-xl bg-white dark:bg-[#1a1b20] rounded-3xl border border-neutral-200 dark:border-neutral-800 shadow-2xl p-6 space-y-5">
         {/* Header */}
         <div className="flex items-center justify-between pb-3 border-b border-neutral-100 dark:border-neutral-800">
@@ -181,6 +108,7 @@ export const NewEventModal: React.FC<NewEventModalProps> = ({
           </div>
           <button
             onClick={onClose}
+            aria-label="Close dialog"
             className="p-1.5 rounded-xl text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition"
           >
             <X className="w-5 h-5" />
@@ -191,7 +119,7 @@ export const NewEventModal: React.FC<NewEventModalProps> = ({
           {/* Event Vertical Selector */}
           <div>
             <label className="block text-xs font-semibold text-neutral-700 dark:text-neutral-300 mb-1.5">
-              Select Celebration Vertical *
+              Select Event Vertical *
             </label>
             <div className="grid grid-cols-4 gap-2 text-xs">
               {[
@@ -203,9 +131,9 @@ export const NewEventModal: React.FC<NewEventModalProps> = ({
                 <button
                   key={t.id}
                   type="button"
-                  onClick={() => setEventType(t.id as any)}
+                  onClick={() => setForm((prev) => ({ ...prev, eventType: t.id as EventData['type'] }))}
                   className={`p-2.5 rounded-xl border text-center font-semibold transition ${
-                    eventType === t.id
+                    form.eventType === t.id
                       ? 'bg-brand-500 text-white border-brand-500 shadow-sm'
                       : 'bg-neutral-50 dark:bg-neutral-900 border-neutral-200 dark:border-neutral-800 text-neutral-700 dark:text-neutral-300'
                   }`}
@@ -223,43 +151,43 @@ export const NewEventModal: React.FC<NewEventModalProps> = ({
             <input
               type="text"
               required
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="e.g. Maya & Kieran Coastal Cliffside Wedding"
-              className="w-full px-3 py-2 text-xs rounded-xl bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 focus:outline-none focus:ring-2 focus:ring-brand-500/30 text-neutral-900 dark:text-white"
+              value={form.title}
+              onChange={(e) => setForm((prev) => ({ ...prev, title: e.target.value }))}
+              placeholder="e.g. Maya & Liam Summer Solstice Nuptials"
+              className="w-full px-3.5 py-2 text-xs rounded-xl bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 text-neutral-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500/30"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-semibold text-neutral-700 dark:text-neutral-300 mb-1">
-                Event Date *
+                Target Date *
               </label>
               <div className="relative">
-                <Calendar className="w-4 h-4 absolute left-3 top-2.5 text-neutral-400" />
+                <Calendar className="w-3.5 h-3.5 absolute left-3 top-2.5 text-neutral-400" />
                 <input
                   type="date"
                   required
-                  value={dateStr}
-                  onChange={(e) => setDateStr(e.target.value)}
-                  className="w-full pl-9 pr-3 py-2 text-xs rounded-xl bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 focus:outline-none focus:ring-2 focus:ring-brand-500/30 text-neutral-900 dark:text-white"
+                  value={form.dateStr}
+                  onChange={(e) => setForm((prev) => ({ ...prev, dateStr: e.target.value }))}
+                  className="w-full pl-9 pr-3 py-2 text-xs rounded-xl bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 text-neutral-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500/30"
                 />
               </div>
             </div>
 
             <div>
               <label className="block text-xs font-semibold text-neutral-700 dark:text-neutral-300 mb-1">
-                Location & Venue *
+                Location / City *
               </label>
               <div className="relative">
-                <MapPin className="w-4 h-4 absolute left-3 top-2.5 text-neutral-400" />
+                <MapPin className="w-3.5 h-3.5 absolute left-3 top-2.5 text-neutral-400" />
                 <input
                   type="text"
                   required
-                  value={location}
-                  onChange={(e) => setLocation(e.target.value)}
-                  placeholder="e.g. Big Sur Lodge • Monterey, CA"
-                  className="w-full pl-9 pr-3 py-2 text-xs rounded-xl bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 focus:outline-none focus:ring-2 focus:ring-brand-500/30 text-neutral-900 dark:text-white"
+                  value={form.location}
+                  onChange={(e) => setForm((prev) => ({ ...prev, location: e.target.value }))}
+                  placeholder="e.g. Carmel Valley, CA"
+                  className="w-full pl-9 pr-3 py-2 text-xs rounded-xl bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 text-neutral-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500/30"
                 />
               </div>
             </div>
@@ -267,35 +195,33 @@ export const NewEventModal: React.FC<NewEventModalProps> = ({
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <div className="flex justify-between items-center mb-1">
-                <label className="text-xs font-semibold text-neutral-700 dark:text-neutral-300">
-                  Guest Target Count
-                </label>
-                <span className="text-xs font-bold text-brand-600 dark:text-brand-400">{guestCount} Guests</span>
-              </div>
+              <label className="block text-xs font-semibold text-neutral-700 dark:text-neutral-300 mb-1">
+                Guest Count: <span className="text-brand-600 dark:text-brand-400 font-bold">{form.guestCount}</span>
+              </label>
               <input
                 type="range"
-                min={20}
-                max={500}
-                step={5}
-                value={guestCount}
-                onChange={(e) => setGuestCount(Number(e.target.value))}
+                min="20"
+                max="500"
+                step="5"
+                value={form.guestCount}
+                onChange={(e) => setForm((prev) => ({ ...prev, guestCount: parseInt(e.target.value, 10) }))}
                 className="w-full accent-brand-500"
               />
             </div>
 
             <div>
               <label className="block text-xs font-semibold text-neutral-700 dark:text-neutral-300 mb-1">
-                Total Budget Cap ($)
+                Total Budget: <span className="text-brand-600 dark:text-brand-400 font-bold">${form.budget.toLocaleString()}</span>
               </label>
               <div className="relative">
-                <DollarSign className="w-4 h-4 absolute left-3 top-2.5 text-neutral-400" />
+                <DollarSign className="w-3.5 h-3.5 absolute left-3 top-2.5 text-neutral-400" />
                 <input
                   type="number"
-                  value={budget}
-                  onChange={(e) => setBudget(Number(e.target.value))}
-                  step={500}
-                  className="w-full pl-9 pr-3 py-2 text-xs rounded-xl bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 focus:outline-none focus:ring-2 focus:ring-brand-500/30 text-neutral-900 dark:text-white font-mono"
+                  min="5000"
+                  step="1000"
+                  value={form.budget}
+                  onChange={(e) => setForm((prev) => ({ ...prev, budget: parseInt(e.target.value, 10) || 0 }))}
+                  className="w-full pl-9 pr-3 py-2 text-xs rounded-xl bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 text-neutral-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500/30"
                 />
               </div>
             </div>
@@ -303,16 +229,16 @@ export const NewEventModal: React.FC<NewEventModalProps> = ({
 
           <div>
             <label className="block text-xs font-semibold text-neutral-700 dark:text-neutral-300 mb-1">
-              Aesthetic Vibe & Sensory Mood
+              Aesthetic Vibe & Design Direction
             </label>
             <div className="relative">
-              <Compass className="w-4 h-4 absolute left-3 top-3 text-neutral-400" />
+              <Compass className="w-3.5 h-3.5 absolute left-3 top-2.5 text-neutral-400" />
               <input
                 type="text"
-                value={vibe}
-                onChange={(e) => setVibe(e.target.value)}
-                placeholder="e.g. Ethereal Coastal, Candlelit Minimalist, Vintage Havana 70s"
-                className="w-full pl-9 pr-3 py-2 text-xs rounded-xl bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 focus:outline-none focus:ring-2 focus:ring-brand-500/30 text-neutral-900 dark:text-white"
+                value={form.vibe}
+                onChange={(e) => setForm((prev) => ({ ...prev, vibe: e.target.value }))}
+                placeholder="e.g. Modern Coastal Elegance, Crisp Linens, Citrus Accents"
+                className="w-full pl-9 pr-3 py-2 text-xs rounded-xl bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 text-neutral-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500/30"
               />
             </div>
           </div>
@@ -328,10 +254,10 @@ export const NewEventModal: React.FC<NewEventModalProps> = ({
             <button
               type="submit"
               disabled={isGenerating}
-              className="px-5 py-2.5 text-xs font-semibold bg-gradient-to-r from-brand-600 to-amber-600 hover:from-brand-700 hover:to-amber-700 text-white rounded-xl shadow-md shadow-brand-500/25 transition flex items-center gap-1.5 active:scale-95 disabled:opacity-50"
+              className="px-5 py-2 text-xs font-semibold bg-brand-500 hover:bg-brand-600 disabled:opacity-50 text-white rounded-xl shadow-md shadow-brand-500/25 transition active:scale-95 flex items-center gap-1.5"
             >
-              <Sparkles className={`w-4 h-4 ${isGenerating ? 'animate-spin' : ''}`} />
-              <span>{isGenerating ? 'Synthesizing Master Blueprint...' : 'Generate Live Blueprint with AI'}</span>
+              <Wand2 className="w-3.5 h-3.5" />
+              <span>{isGenerating ? 'Synthesizing Blueprint...' : 'Generate AI Master Blueprint'}</span>
             </button>
           </div>
         </form>

@@ -1,5 +1,5 @@
-import React from 'react';
-import { X, Wine, Copy, Check, Sparkles, Scale } from 'lucide-react';
+import React, { useEffect } from 'react';
+import { X, Wine, Copy, Check, Scale } from 'lucide-react';
 import { CocktailRecipe } from '../../types';
 
 interface CocktailBatchModalProps {
@@ -19,6 +19,18 @@ export const CocktailBatchModal: React.FC<CocktailBatchModalProps> = ({
 }) => {
   const [copied, setCopied] = React.useState(false);
 
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.stopPropagation();
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   const handleCopy = () => {
@@ -35,7 +47,16 @@ ${cocktail.instructions}`;
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200" role="dialog" aria-modal="true" aria-labelledby="cocktail-batch-title">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="cocktail-batch-title"
+      tabIndex={-1}
+      onKeyDown={(e) => {
+        if (e.key === 'Escape') onClose();
+      }}
+    >
       <div className="relative w-full max-w-lg bg-white dark:bg-[#1a1b20] rounded-3xl border border-neutral-200 dark:border-neutral-800 shadow-2xl p-6 space-y-5">
         {/* Header */}
         <div className="flex items-start justify-between pb-3 border-b border-neutral-100 dark:border-neutral-800">
@@ -57,6 +78,7 @@ ${cocktail.instructions}`;
           </div>
           <button
             onClick={onClose}
+            aria-label="Close dialog"
             className="p-1.5 rounded-xl text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition"
           >
             <X className="w-5 h-5" />

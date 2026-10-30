@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { X, Calendar, Flag, AlertCircle, Link } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { X, Calendar, Link } from 'lucide-react';
 import { Milestone } from '../../types';
 
 interface AddMilestoneModalProps {
@@ -13,21 +13,42 @@ export const AddMilestoneModal: React.FC<AddMilestoneModalProps> = ({
   onClose,
   onAddMilestone,
 }) => {
-  const [title, setTitle] = useState('');
-  const [dueDate, setDueDate] = useState('');
-  const [priority, setPriority] = useState<Milestone['priority']>('High');
-  const [category, setCategory] = useState('Logistics');
-  const [description, setDescription] = useState('');
-  const [hasDependency, setHasDependency] = useState(false);
-  const [dependencyRule, setDependencyRule] = useState('');
+  const [form, setForm] = useState({
+    title: '',
+    dueDate: '',
+    priority: 'High' as Milestone['priority'],
+    category: 'Logistics',
+    description: '',
+    hasDependency: false,
+    dependencyRule: '',
+  });
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.stopPropagation();
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Escape') {
+      e.stopPropagation();
+      onClose();
+    }
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!title.trim() || !dueDate) return;
+    if (!form.title.trim() || !form.dueDate) return;
 
-    const formattedDate = new Date(dueDate).toLocaleDateString('en-US', {
+    const formattedDate = new Date(form.dueDate).toLocaleDateString('en-US', {
       month: 'short',
       day: 'numeric',
       year: 'numeric',
@@ -35,27 +56,38 @@ export const AddMilestoneModal: React.FC<AddMilestoneModalProps> = ({
 
     const newMs: Milestone = {
       id: `ms-${Date.now()}`,
-      title: title.trim(),
-      description: description.trim() || undefined,
+      title: form.title.trim(),
+      description: form.description.trim() || undefined,
       dueDate: formattedDate,
       relativeDays: `Due ${formattedDate}`,
-      priority,
-      status: hasDependency ? 'Blocked' : 'Pending',
-      category,
-      blockedBy: hasDependency && dependencyRule.trim() ? dependencyRule.trim() : undefined,
+      priority: form.priority,
+      status: form.hasDependency ? 'Blocked' : 'Pending',
+      category: form.category,
+      blockedBy: form.hasDependency && form.dependencyRule.trim() ? form.dependencyRule.trim() : undefined,
     };
 
     onAddMilestone(newMs);
-    setTitle('');
-    setDueDate('');
-    setDescription('');
-    setHasDependency(false);
-    setDependencyRule('');
+    setForm({
+      title: '',
+      dueDate: '',
+      priority: 'High',
+      category: 'Logistics',
+      description: '',
+      hasDependency: false,
+      dependencyRule: '',
+    });
     onClose();
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200" role="dialog" aria-modal="true" aria-labelledby="add-milestone-title">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="add-milestone-title"
+      tabIndex={-1}
+      onKeyDown={handleKeyDown}
+    >
       <div className="relative w-full max-w-lg bg-white dark:bg-[#1a1b20] rounded-3xl border border-neutral-200 dark:border-neutral-800 shadow-2xl p-6 space-y-5">
         <div className="flex items-center justify-between pb-3 border-b border-neutral-100 dark:border-neutral-800">
           <div className="flex items-center gap-2.5">
@@ -69,6 +101,7 @@ export const AddMilestoneModal: React.FC<AddMilestoneModalProps> = ({
           </div>
           <button
             onClick={onClose}
+            aria-label="Close dialog"
             className="p-1.5 rounded-xl text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition"
           >
             <X className="w-5 h-5" />
@@ -83,8 +116,8 @@ export const AddMilestoneModal: React.FC<AddMilestoneModalProps> = ({
             <input
               type="text"
               required
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
+              value={form.title}
+              onChange={(e) => setForm((prev) => ({ ...prev, title: e.target.value }))}
               placeholder="e.g. Finalize Acoustic Sound Curfew Permit"
               className="w-full px-3 py-2 text-xs rounded-xl bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 focus:outline-none focus:ring-2 focus:ring-brand-500/30 text-neutral-900 dark:text-white"
             />
@@ -98,8 +131,8 @@ export const AddMilestoneModal: React.FC<AddMilestoneModalProps> = ({
               <input
                 type="date"
                 required
-                value={dueDate}
-                onChange={(e) => setDueDate(e.target.value)}
+                value={form.dueDate}
+                onChange={(e) => setForm((prev) => ({ ...prev, dueDate: e.target.value }))}
                 className="w-full px-3 py-2 text-xs rounded-xl bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 focus:outline-none focus:ring-2 focus:ring-brand-500/30 text-neutral-900 dark:text-white"
               />
             </div>
@@ -109,8 +142,8 @@ export const AddMilestoneModal: React.FC<AddMilestoneModalProps> = ({
                 Priority Tier
               </label>
               <select
-                value={priority}
-                onChange={(e) => setPriority(e.target.value as any)}
+                value={form.priority}
+                onChange={(e) => setForm((prev) => ({ ...prev, priority: e.target.value as Milestone['priority'] }))}
                 className="w-full px-3 py-2 text-xs rounded-xl bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 focus:outline-none focus:ring-2 focus:ring-brand-500/30 text-neutral-900 dark:text-white"
               >
                 <option value="High">High Priority (Critical Path)</option>
@@ -125,8 +158,8 @@ export const AddMilestoneModal: React.FC<AddMilestoneModalProps> = ({
               Operational Category
             </label>
             <select
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
+              value={form.category}
+              onChange={(e) => setForm((prev) => ({ ...prev, category: e.target.value }))}
               className="w-full px-3 py-2 text-xs rounded-xl bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 focus:outline-none focus:ring-2 focus:ring-brand-500/30 text-neutral-900 dark:text-white"
             >
               <option value="Logistics">Logistics & Transportation</option>
@@ -143,8 +176,8 @@ export const AddMilestoneModal: React.FC<AddMilestoneModalProps> = ({
               Execution Notes & Instructions
             </label>
             <textarea
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
+              value={form.description}
+              onChange={(e) => setForm((prev) => ({ ...prev, description: e.target.value }))}
               rows={2}
               placeholder="Outline specific deliverables, contact persons, or verification standards..."
               className="w-full px-3 py-2 text-xs rounded-xl bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 focus:outline-none focus:ring-2 focus:ring-brand-500/30 text-neutral-900 dark:text-white"
@@ -155,8 +188,8 @@ export const AddMilestoneModal: React.FC<AddMilestoneModalProps> = ({
             <label className="flex items-center gap-2 cursor-pointer">
               <input
                 type="checkbox"
-                checked={hasDependency}
-                onChange={(e) => setHasDependency(e.target.checked)}
+                checked={form.hasDependency}
+                onChange={(e) => setForm((prev) => ({ ...prev, hasDependency: e.target.checked }))}
                 className="w-4 h-4 rounded text-brand-600 focus:ring-brand-500 border-neutral-300 dark:border-neutral-700"
               />
               <span className="text-xs font-bold text-amber-900 dark:text-amber-200 flex items-center gap-1">
@@ -164,11 +197,11 @@ export const AddMilestoneModal: React.FC<AddMilestoneModalProps> = ({
                 Add Prerequisite Dependency Lock
               </span>
             </label>
-            {hasDependency && (
+            {form.hasDependency && (
               <input
                 type="text"
-                value={dependencyRule}
-                onChange={(e) => setDependencyRule(e.target.value)}
+                value={form.dependencyRule}
+                onChange={(e) => setForm((prev) => ({ ...prev, dependencyRule: e.target.value }))}
                 placeholder="e.g. Locked until final guest dietary matrix is compiled"
                 className="w-full px-3 py-1.5 text-xs rounded-xl bg-white dark:bg-neutral-900 border border-amber-300/60 dark:border-amber-800 text-neutral-900 dark:text-white"
               />

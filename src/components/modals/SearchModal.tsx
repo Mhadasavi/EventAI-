@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Search, X, Calendar, DollarSign, Users, Wine, ArrowRight, ShieldCheck, Sparkles } from 'lucide-react';
+import { Search, Calendar, DollarSign, ArrowRight, ShieldCheck, Sparkles } from 'lucide-react';
 import { EventData, VendorPartner } from '../../types';
 
 interface SearchModalProps {
@@ -58,11 +58,13 @@ export const SearchModal: React.FC<SearchModalProps> = ({
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
+            aria-label="Search budget tranches, vendor contracts, or ask AI"
             placeholder="Search budget tranches, vendor contracts, or ask AI..."
             className="w-full bg-transparent text-sm focus:outline-none text-neutral-900 dark:text-white placeholder-neutral-400"
           />
           <button
             onClick={onClose}
+            aria-label="Close search"
             className="p-1 rounded-lg text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 ml-2"
           >
             <kbd className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-neutral-100 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700">ESC</kbd>

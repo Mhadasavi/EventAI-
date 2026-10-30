@@ -1,3 +1,5 @@
+export type ActiveModal = 'expense' | 'milestone' | 'ledger' | 'newEvent' | 'contractAudit' | 'vendorDetail' | 'cocktail' | 'search' | 'rsvp' | 'aiSavings' | 'dependencyGraph' | 'quoteComparison' | 'creativeVault' | 'coPlanner' | null;
+
 export interface BudgetItem {
   id: string;
   category: string;

@@ -1,4 +1,4 @@
-import React, { Component, ErrorInfo, ReactNode } from 'react';
+import { Component, ErrorInfo, ReactNode } from 'react';
 import { AlertTriangle, RefreshCw } from 'lucide-react';
 
 interface Props {
@@ -12,7 +12,7 @@ interface State {
 }
 
 /**
- * Standard Accessible Error Boundary for CelebrateAI
+ * Standard Accessible Error Boundary for EventAI
  * Catches rendering exceptions and displays an elegant fallback with recovery action.
  */
 export class ErrorBoundary extends Component<Props, State> {
@@ -25,7 +25,7 @@ export class ErrorBoundary extends Component<Props, State> {
   }
 
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error('CelebrateAI ErrorBoundary caught an error:', error, errorInfo);
+    console.error('EventAI ErrorBoundary caught an error:', error, errorInfo);
   }
 
   public handleReset = () => {
@@ -52,7 +52,7 @@ export class ErrorBoundary extends Component<Props, State> {
               Something went unexpected
             </h2>
             <p className="text-xs text-neutral-600 dark:text-neutral-400 leading-relaxed">
-              CelebrateAI encountered a transient rendering glitch. Your planning session and budget ledgers remain intact.
+              EventAI encountered a transient rendering glitch. Your planning session and budget ledgers remain intact.
             </p>
             <button
               onClick={this.handleReset}

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Clock, MapPin, Calendar, Plus, MessageSquare, ShieldCheck, CheckCircle2, Users, DollarSign, Sparkles, Download } from 'lucide-react';
+import { Clock, MapPin, Calendar, Plus, MessageSquare, ShieldCheck, Download } from 'lucide-react';
 import { EventData } from '../types';
 
 interface EventHeroProps {
@@ -37,9 +37,9 @@ export const EventHero: React.FC<EventHeroProps> = ({
   };
 
   // SVG circular gauge calculation
-  const radius = 15.9155;
-  const circumference = 2 * Math.PI * radius; // ~100
-  const strokeDashoffset = 100 - event.readinessScore;
+
+
+
 
   const countdownText =
     event.type === 'wedding'
@@ -114,7 +114,7 @@ export const EventHero: React.FC<EventHeroProps> = ({
 
             <div>
               <div className="text-xs font-semibold text-neutral-900 dark:text-neutral-100 flex items-center gap-1.5">
-                Celebration Readiness
+                Event Readiness
                 <span className="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
               </div>
               <div className="text-xs text-neutral-500 dark:text-neutral-400 mt-0.5">

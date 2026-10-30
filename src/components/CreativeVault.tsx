@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Wine, Copy, Check, Sparkles, Music, Palette } from 'lucide-react';
+import { Wine, Check } from 'lucide-react';
 import { CreativeDeck } from '../types';
 
 interface CreativeVaultProps {
@@ -103,9 +103,10 @@ export const CreativeVault: React.FC<CreativeVaultProps> = ({
                 backgroundColor: swatch.hex,
                 color: swatch.hex === '#F2D8CC' || swatch.hex === '#EFE7DA' || swatch.hex === '#E3DFD5' ? '#333' : '#fff',
               }}
+              aria-label={`Copy color ${swatch.name} (${swatch.hex})`}
               title={`${swatch.name}: ${swatch.hex} (Click to copy)`}
             >
-              <span>{copiedHex === swatch.hex ? '✓' : swatch.hex}</span>
+              <span>{copiedHex === swatch.hex ? <Check className="w-3.5 h-3.5 mx-auto" /> : swatch.hex}</span>
             </button>
           ))}
         </div>

@@ -55,7 +55,7 @@ export const Header: React.FC<HeaderProps> = ({
             </div>
             <div>
               <span className="font-serif text-xl font-bold tracking-tight text-neutral-900 dark:text-white">
-                Celebrate<span className="text-brand-500">AI</span>
+                Event<span className="text-brand-500">AI</span>
               </span>
               <span className="hidden md:inline-block ml-2 px-2 py-0.5 text-[10px] uppercase font-bold tracking-wider rounded-full bg-brand-50 dark:bg-brand-900/30 text-brand-600 dark:text-brand-300 border border-brand-200/50 dark:border-brand-800/50">
                 Studio Master
@@ -206,7 +206,11 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Ask Copilot Button */}
           <button
             onClick={onToggleCopilot}
-            className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-gradient-to-r from-brand-600 to-brand-500 hover:from-brand-700 hover:to-brand-600 text-white shadow-sm shadow-brand-500/25 text-xs font-semibold tracking-wide transition transform active:scale-95"
+            aria-expanded={isCopilotOpen}
+            aria-label="Toggle Copilot Drawer"
+            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-full text-white shadow-sm shadow-brand-500/25 text-xs font-semibold tracking-wide transition transform active:scale-95 ${
+              isCopilotOpen ? 'bg-brand-700 ring-2 ring-brand-400/50' : 'bg-gradient-to-r from-brand-600 to-brand-500 hover:from-brand-700 hover:to-brand-600'
+            }`}
           >
             <Zap className="w-3.5 h-3.5 fill-current" />
             <span className="hidden sm:inline">Ask Copilot</span>

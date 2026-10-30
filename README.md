@@ -1,14 +1,14 @@
-# CelebrateAI — Unified Master Command Dashboard
+﻿# EventAI — Unified Master Command Dashboard
 
 > **Enterprise-Grade GenAI-Powered Event Planning & Capital Command System**  
-> *Empathetic, hyper-organized, and fiscally disciplined orchestration for bespoke weddings, milestone celebrations, and community galas.*
+> *Empathetic, hyper-organized, and fiscally disciplined orchestration for bespoke weddings, milestone gatherings, and community galas.*
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue.svg)](https://www.typescriptlang.org/)
 [![React 19](https://img.shields.io/badge/React-19.0-61dafb.svg)](https://react.dev/)
 [![Tailwind CSS v4](https://img.shields.io/badge/Tailwind-v4-38bdf8.svg)](https://tailwindcss.com/)
 [![Express](https://img.shields.io/badge/Express-4.21-green.svg)](https://expressjs.com/)
 [![Gemini 3.8-Flash](https://img.shields.io/badge/Google%20GenAI-gemini--3.8--flash-orange.svg)](https://ai.google.dev/)
-[![Tests Passing](https://img.shields.io/badge/Tests-20%2F20%20Passing-brightgreen.svg)]()
+[![Tests Passing](https://img.shields.io/badge/Tests-32%2F32%20Passing-brightgreen.svg)]()
 
 ---
 
@@ -20,25 +20,25 @@
 ---
 
 ## 📑 Table of Contents
-1. [What is CelebrateAI?](#1-what-is-celebrateai)
-2. [Why CelebrateAI? (Core Value Pillars)](#2-why-celebrateai-core-value-pillars)
+1. [What is EventAI?](#1-what-is-eventai)
+2. [Why EventAI? (Core Value Pillars)](#2-why-eventai-core-value-pillars)
 3. [System Architecture & Security](#3-system-architecture--security)
 4. [API Endpoints Specification](#4-api-endpoints-specification)
 5. [How-To: Quick Start Guide](#5-how-to-quick-start-guide)
 6. [Feature-by-Feature Operational Walkthrough](#6-feature-by-feature-operational-walkthrough)
 7. [Key Domain Assumptions & Planning Rules](#7-key-domain-assumptions--planning-rules)
-8. [Automated Test Suite Breakdown (20 Tests)](#8-automated-test-suite-breakdown-20-tests)
+8. [Automated Test Suite Breakdown (32 Tests)](#8-automated-test-suite-breakdown-32-tests)
 9. [Production Deployment & Environment Setup](#9-production-deployment--environment-setup)
 
 ---
 
-## 1. What is CelebrateAI?
+## 1. What is EventAI?
 
 ### **The Problem**
-Event hosts, couples, and celebration organizers carry immense cognitive load. They juggle fragmented spreadsheets, disjointed chat threads, opaque vendor contracts with hidden fees (e.g. $4.50/bottle corkage, weekend strike surcharges), uncoordinated milestone deadlines, and unpredictable budget creep. Most planning apps are either glorified static checklists or simple balance calculators that provide zero strategic or empathetic guidance.
+Event hosts, couples, and event organizers carry immense cognitive load. They juggle fragmented spreadsheets, disjointed chat threads, opaque vendor contracts with hidden fees (e.g. $4.50/bottle corkage, weekend strike surcharges), uncoordinated milestone deadlines, and unpredictable budget creep. Most planning apps are either glorified static checklists or simple balance calculators that provide zero strategic or empathetic guidance.
 
 ### **The Solution**
-**CelebrateAI** is a full-stack, autonomous master command center. It unifies high-touch editorial design with data-backed fiscal rigor and generative intelligence:
+**EventAI** is a full-stack, autonomous master command center. It unifies high-touch editorial design with data-backed fiscal rigor and generative intelligence:
 - **Autonomous Budget Pacing:** Continuously guards a dedicated Safe Harbor capital cushion (10–15%) and detects line-item creep with 1-click surplus rebalancing.
 - **Reverse-Engineered Milestone Execution:** Milestones are calculated backward from the event date (T-minus countdown) and locked with prerequisite dependency rules (e.g., Rule DEP-882 locks stationery printing until RSVPs lock).
 - **Vendor Contract Audit & Value-Engineered Negotiation:** Automatically audits contracts for hidden liability clauses and drafts polite, value-engineered substitution requests.
@@ -47,29 +47,29 @@ Event hosts, couples, and celebration organizers carry immense cognitive load. T
 
 ---
 
-## 2. Why CelebrateAI? (Core Value Pillars)
+## 2. Why EventAI? (Core Value Pillars)
 
-| Feature Pillar | The Traditional Way | The CelebrateAI Way |
+| Feature Pillar | The Traditional Way | The EventAI Way |
 | :--- | :--- | :--- |
 | **Budget Control** | Spreadsheet formulas break; overages cause panic or debt. | **Safe Harbor Buffer** + **1-Click AI Surplus Rebalance** without depleting reserves. |
 | **Milestone Planning** | Static to-do list; tasks are done out of order, causing reprint waste. | **Reverse-Engineered Critical Path** with **Dependency Locks (Rule DEP-882)**. |
 | **Vendor Contracts** | Fine print is skipped; hidden fees and cancellation traps surprise hosts. | **Autonomous Contract & Fee Scanner** surfaces hidden clauses and draft negotiations. |
 | **Vendor Negotiations** | Aggressive bargaining damages relationships or lowers quality. | **Empathetic Value Engineering** proposes creative substitutions (e.g., garden roses for peonies). |
 | **Bar & Logistics Scaling** | Guesswork leads to costly liquor overstock or mid-party shortages. | **Algorithmic Batch Scaler** converts guest count directly into ounces, bottles, and garnishes. |
-| **Multi-Event Workspaces** | Siloed folders or separate logins for different celebrations. | **Unified Master Switcher** supporting multi-vertical celebrations and GenAI blueprinting. |
+| **Multi-Event Workspaces** | Siloed folders or separate logins for different events. | **Unified Master Switcher** supporting multi-vertical events and GenAI blueprinting. |
 
 ---
 
 ## 3. System Architecture & Security
 
-CelebrateAI follows a resilient full-stack architecture that keeps secrets completely isolated from the client bundle.
+EventAI follows a resilient full-stack architecture that keeps secrets completely isolated from the client bundle.
 
 ```
 ┌────────────────────────────────────────────────────────────────────────┐
 │                        Client: React 19 SPA                           │
 │  • EventHero & Readiness Ring   • FinancialPulse & 1-Click Rebalance   │
 │  • Milestone Dependency Graph   • Vendor Radar & Contract Audit        │
-│  • Creative Vault & Batch Scaler • CelebrateAI Copilot Drawer          │
+│  • Creative Vault & Batch Scaler • EventAI Copilot Drawer          │
 │  • Global Spotlight Search (⌘K) • Dark/Light Mode Engine              │
 └───────────────────────────────────┬────────────────────────────────────┘
                                     │ HTTP / JSON (Client Proxy)
@@ -87,12 +87,14 @@ CelebrateAI follows a resilient full-stack architecture that keeps secrets compl
 ```
 
 ### **Security Hardening**
-1. **Zero Client-Side API Key Exposure:** The Google Gemini API key (`process.env.GEMINI_API_KEY`) is read exclusively by `server.ts`. No keys are bundled into Vite client assets.
+1. **Zero Client-Side API Key Exposure:** The Google Gemini API key (`process.env.GEMINI_API_KEY`) is read exclusively by server-side controllers (`controllers/gemini.controller.ts`). No keys are bundled into Vite client assets.
 2. **HTTP Security Response Headers:**
    - `X-Content-Type-Options: nosniff`
    - `X-XSS-Protection: 1; mode=block`
    - `Referrer-Policy: strict-origin-when-cross-origin`
-   - Frame authorization configured to enable seamless AI Studio container embedding.
+   - `X-Frame-Options: SAMEORIGIN`
+   - `Permissions-Policy: camera=(), microphone=(), geolocation=()`
+   - `Strict-Transport-Security: max-age=31536000; includeSubDomains`
 3. **Payload Sanitization:** Rejects payload injections, strips illegal tags, and caps input prompt lengths at 3,000 characters to prevent prompt injection or buffer bloat.
 4. **Self-Healing Fallback Engine:** If an API key is unconfigured, rate-limited, or network drops, the backend automatically transitions to a localized semantic rules engine. The user interface remains 100% operational with zero broken states.
 
@@ -163,14 +165,14 @@ Audits vendor contracts, detecting hidden fees, cancellation policies, and savin
 Clone the repository and install dependencies:
 ```bash
 git clone <repository-url>
-cd celebrateai
+cd eventai
 npm install
 ```
 
 ### **Environment Configuration**
 Create a `.env` file in the root directory (refer to `.env.example`):
 ```env
-# Optional: If omitted, CelebrateAI automatically operates using its built-in heuristic AI engine
+# Optional: If omitted, EventAI automatically operates using its built-in heuristic AI engine
 GEMINI_API_KEY="your-gemini-api-key-here"
 
 # Application host URL (defaults to http://localhost:3000)
@@ -215,9 +217,9 @@ npm start
 
 ### **B. Creating a New Event with GenAI**
 1. Open the Event Selector dropdown and click **"+ Create New Event with GenAI"** (or use `⌘K` -> Create New Event).
-2. Enter the celebration name, select the vertical (Wedding, Birthday, Gala, Corporate, Custom), set target guest count and budget cap.
+2. Enter the event name, select the vertical (Wedding, Birthday, Gala, Corporate, Custom), set target guest count and budget cap.
 3. Click **"Generate Master Blueprint"**.
-4. CelebrateAI synthesizes reverse-engineered milestones, proportional budget tranches, vendor radar cards, and signature cocktail specs into a new interactive workspace.
+4. EventAI synthesizes reverse-engineered milestones, proportional budget tranches, vendor radar cards, and signature cocktail specs into a new interactive workspace.
 
 ### **C. Resolving Budget Creep via 1-Click Rebalance**
 1. Navigate to the **Financial Pulse** card.
@@ -237,7 +239,7 @@ npm start
 1. On the milestone *"Book Guest Shuttles & St. Helena Charter Vans"*, click **"Review Quotes (3 Available)"**.
 2. The **Quote Comparison Modal** appears, comparing Napa Valley Sprinters ($1,850), St. Helena Wine Country Charters ($2,100), and Bay Area Luxury Coach ($2,450).
 3. Click **"Approve & Confirm Quote"** on the recommended vendor.
-4. The contract is committed, the milestone is marked Completed, and the Celebration Readiness ring advances.
+4. The contract is committed, the milestone is marked Completed, and the Event Readiness ring advances.
 
 ### **F. Algorithmic Cocktail Batch Scaler**
 1. In the **Creative Vault**, view the Signature Cocktail Card (*Smoked Honey & Thyme French 75*).
@@ -259,7 +261,7 @@ npm start
 ## 7. Key Domain Assumptions & Planning Rules
 
 1. **Safe Harbor Buffer Allocation (10–15%):**
-   - Standard event planning wisdom mandates a minimum 10% to 15% liquid buffer for weather-related contingencies, late overtime charges, and gratuity adjustments. CelebrateAI assumes a baseline 14.7% ($6,580) cushion for Napa harvest-season events.
+   - Standard event planning wisdom mandates a minimum 10% to 15% liquid buffer for weather-related contingencies, late overtime charges, and gratuity adjustments. EventAI assumes a baseline 14.7% ($6,580) cushion for Napa harvest-season events.
 2. **Stationery Dependency Lead-Time (Rule DEP-882):**
    - Assumes catering and stationery final locks require an 18-day lead time before the event date to prevent costly reprinting fees or unrecoverable plate commitments.
 3. **Vendor Payment Tranche Standard:**
@@ -269,9 +271,9 @@ npm start
 
 ---
 
-## 8. Automated Test Suite Breakdown (20 Tests)
+## 8. Automated Test Suite Breakdown (32 Tests)
 
-Run `npm test` to execute all 20 test specifications:
+Run `npm test` to execute all 32 test specifications:
 
 ```
 TAP version 13
@@ -295,9 +297,9 @@ TAP version 13
 # Subtest: validates security response headers configuration (ok 18)
 # Subtest: validates prevention of malicious script injection in user prompt sanitization (ok 19)
 # Subtest: validates server-side API key isolation without client leaking (ok 20)
-1..20
-# tests 20
-# pass 20
+1..32
+# tests 32
+# pass 32
 # fail 0
 ```
 
@@ -312,4 +314,6 @@ TAP version 13
 
 ---
 
-*CelebrateAI Studio Master • Crafted for unforgettable, fiscally sound celebrations.*
+*EventAI Studio Master • Crafted for unforgettable, fiscally sound events.*
+
+
