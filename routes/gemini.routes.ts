@@ -1,11 +1,11 @@
-import { Router } from 'express';
+import express from 'express';
 import {
   handleChat,
   handleGeneratePlan,
   handleAuditContract,
-} from '../controllers/gemini.controller';
+} from '../controllers/gemini.controller.ts';
 
-const router = Router();
+const router = express.Router();
 
 router.post(['/chat', '/api/gemini/chat'], handleChat);
 router.post(['/generate-plan', '/api/gemini/generate-plan'], handleGeneratePlan);

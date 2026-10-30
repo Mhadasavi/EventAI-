@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import type { Request, Response } from 'express';
 import { GoogleGenAI } from '@google/genai';
 import dotenv from 'dotenv';
 
@@ -48,8 +48,8 @@ export function sanitizeInput(input: unknown, maxLen = 3000): string {
   return input.trim().replace(/[<>]/g, '').slice(0, maxLen);
 }
 
-export { generateSmartFallback, type CopilotContext } from './gemini.fallback';
-import { generateSmartFallback } from './gemini.fallback';
+export { generateSmartFallback, type CopilotContext } from './gemini.fallback.ts';
+import { generateSmartFallback } from './gemini.fallback.ts';
 
 // 1. Copilot Chat Endpoint
 export const handleChat = async (req: Request, res: Response) => {
